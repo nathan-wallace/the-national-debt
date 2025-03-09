@@ -4,11 +4,11 @@
   "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:css": "tailwindcss -i ./styles.css -o ./styles.css --watch",
-    "serve": "live-server .",
-    "start": "webpack serve",
-    "build": "webpack --mode production"
-  },
+    "build:css": "tailwindcss -i ./styles.css -o ./styles.css",
+    "start": "webpack serve --open",
+    "build": "webpack --mode production && cp public/index.html dist/ && cp src/styles.css dist/",
+    "deploy": "gh-pages -d dist"
+   },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,6 +20,7 @@
     "@tailwindcss/postcss": "^4.0.12",
     "autoprefixer": "^10.4.21",
     "css-loader": "^7.1.2",
+    "gh-pages": "^6.3.0",
     "postcss": "^8.5.3",
     "postcss-loader": "^8.1.1",
     "style-loader": "^4.0.0",
