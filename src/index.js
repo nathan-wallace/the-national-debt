@@ -300,14 +300,14 @@ function showPreloader() {
     .attr('transform', `translate(${width / 2}, ${height / 2})`);
 
   shapes.append('circle')
-    .attr('r', 50)
+    .attr('r', 100)
     .attr('fill', 'none')
-    .attr('stroke', '#ffcc00')
+    .attr('stroke', '#00ffcc')
     .attr('stroke-width', 3)
     .transition()
     .duration(4000)
     .ease(d3.easeSin)
-    .attr('r', 100)
+    .attr('r', 50)
     .attrTween('transform', () => d3.interpolateString('rotate(0)', 'rotate(360)'));
 
   shapes.append('rect')
