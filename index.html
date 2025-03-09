@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>US National Debt Tracker</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script defer src="/bundle.js"></script>
+</head>
+<body>
+  <div id="preloader"></div>
+  <div class="container">
+    <header class="header">
+      <h1>U.S. National Debt Tracker</h1>
+    </header>
+    <main>
+      <section id="chartSection" class="chart-section">
+        <div class="crt-flicker"></div>
+        <div id="debtTicker" class="ticker">$0.00</div>
+        <svg id="debtChart" width="100%" height="500"></svg>
+        <div class="analysis">
+          <h2 id="analysisHeader"></h2>
+          <p id="analysisText"></p>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span class="org-name">U.S. National Debt Tracker</span>
+      Project by Nathan Wallace | 
+      <a href="https://github.com/nathan-wallace/us-national-debt-tracker" target="_blank">GitHub Repository</a>
+    </footer>
+  </div>
+</body>
+</html>
