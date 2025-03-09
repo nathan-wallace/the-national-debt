@@ -1,14 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+html{
+  background: #0a0a0a;
+}
 body {
   font-family: 'Courier New', Courier, monospace;
   background: #0a0a0a;
   background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
   color: #e0e0e0;
   margin: 0;
-  padding: 20px;
   overflow-x: hidden;
 }
 
@@ -16,6 +17,7 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   opacity: 0;
+  padding: 20px;
 }
 
 .header {
@@ -156,7 +158,6 @@ footer {
   color: #e0e0e0;
   font-size: 0.9rem;
   border-top: 2px solid #333;
-  margin-top: 40px;
   background: #000;
   box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
   position: relative;
