@@ -16,7 +16,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-shadow: inset 0 0 20px #00ffcc, 0 0 30px #00ffcc;
-
 }
 
 .container {
@@ -153,6 +152,14 @@ footer .org-name {
   font-size: clamp(0.9rem, 2vw, 1rem);
   display: block;
   margin-bottom: 10px;
+}
+
+.footer-image {
+  max-width: 100px;
+  height: auto;
+  margin: 10px;
+  border: 2px solid #00ffcc;
+  border-radius: 5px;
 }
 
 @media (prefers-reduced-motion: reduce) {
