@@ -8,7 +8,7 @@
     "start": "webpack serve --open",
     "build": "webpack --mode production && cp public/index.html dist/ && cp src/styles.css dist/",
     "deploy": "gh-pages -d dist"
-   },
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "autoprefixer": "^10.4.21",
     "css-loader": "^7.1.2",
     "gh-pages": "^6.3.0",
+    "image-minimizer-webpack-plugin": "^4.1.3",
     "postcss": "^8.5.3",
     "postcss-loader": "^8.1.1",
     "style-loader": "^4.0.0",
