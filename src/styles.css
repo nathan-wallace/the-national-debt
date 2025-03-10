@@ -136,14 +136,13 @@ footer span {
 
 footer a {
   color: #00ffcc;
-  text-decoration: none;
+  text-decoration: underline;
   transition: color 0.3s ease;
   margin: 0 10px;
 }
 
 footer a:hover {
-  color: #ffcc00;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 footer .org-name {
