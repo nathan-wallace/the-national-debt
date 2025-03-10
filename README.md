@@ -2,6 +2,8 @@
 
 A dynamic web application for visualizing the United States national debt over time. Built with D3.js, Tailwind CSS, and Webpack, this tracker fetches live data from the U.S. Treasury Fiscal Data API and presents it through interactive charts, animated tickers, and engaging preloader effects.
 
+[The National Debt](https://nathan-wallace.github.io/the-national-debt/)
+
 ## Features
 
 - **Interactive Visualization:** Animated line chart displaying the evolution of U.S. national debt.
