@@ -1,13 +1,15 @@
+// webpack.config.js
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
+  mode: 'development', // Webpack will override this with --mode production in the build script
   entry: './src/index.js',
   output: {
-    filename: 'bundle.js',
+    filename: 'bundle.[contenthash].js', // Add contenthash for cache busting
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
+    clean: true, // Automatically clean the dist folder before each build
   },
   module: {
     rules: [
@@ -26,8 +28,30 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'public/images', to: 'images' }, // Copy images directory to dist/images
+        { from: 'public/images', to: 'images' },
       ],
     }),
   ],
+  optimization: { // Add this section
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({ // Explicitly use Terser for JS minification
+        extractComments: false, // Don’t extract comments to a separate file
+        terserOptions: {
+          compress: { drop_console: true }, // Remove console.logs in production
+          mangle: true, // Shorten variable names
+        },
+      }),
+    ],
+    splitChunks: { // Split vendor code (e.g., D3) into a separate chunk
+      chunks: 'all',
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        },
+      },
+    },
+  },
 };
