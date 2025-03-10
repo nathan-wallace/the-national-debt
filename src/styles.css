@@ -1,23 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-html{
+
+html {
   background: #0a0a0a;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
+
 body {
   font-family: 'Courier New', Courier, monospace;
-  background: #0a0a0a;
-  background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-  color: #e0e0e0;
+  background: #0a0a0a radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+  color: #00ffcc;
   margin: 0;
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-shadow: inset 0 0 20px #00ffcc, 0 0 30px #00ffcc;
+
 }
 
 .container {
   max-width: 1400px;
   margin: 0 auto;
+  padding: clamp(10px, 2vw, 20px);
   opacity: 0;
-  padding: 20px;
 }
 
 .header {
@@ -28,21 +34,19 @@ body {
 .header h1 {
   font-family: 'Press Start 2P', 'Courier New', monospace;
   color: #ffcc00;
-  text-shadow: 3px 3px 0 #000, -2px -2px 0 #000, 0 0 15px #ffcc00;
-  font-size: 2.5rem;
-  margin-bottom: 25px;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  margin-bottom: 15px;
 }
 
 .ticker {
-  font-family: 'Digital-7', 'Courier New', monospace;
-  font-size: 3.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: clamp(2rem, 5vw, 3.5rem);
   color: #00ffcc;
   background: #000;
   border: 5px solid #00ffcc;
-  padding: 15px 25px;
+  padding: clamp(10px, 2vw, 15px) clamp(15px, 3vw, 25px);
   border-radius: 10px;
   box-shadow: inset 0 0 15px #00ffcc, 0 0 20px #00ffcc;
-  text-shadow: 0 0 10px #00ffcc;
   text-align: right;
   overflow: hidden;
   white-space: nowrap;
@@ -51,45 +55,17 @@ body {
 }
 
 .chart-section {
-  margin-bottom: 50px;
   background: #000;
-  border: 10px solid #333;
-  border-radius: 20px;
-  box-shadow: inset 0 0 20px #00ffcc, 0 0 30px #00ffcc;
-  padding: 20px;
+  padding: clamp(10px, 2vw, 20px);
   position: relative;
   overflow: hidden;
-  filter: contrast(1.2) brightness(1.1);
-}
-
-.chart-section::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  border: 5px solid #555;
-  border-radius: 25px;
-  pointer-events: none;
 }
 
 .chart-section svg {
   border-radius: 15px;
   background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
   width: 100%;
-  height: 500px;
-}
-
-.chart-section::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) 2px, transparent 2px, transparent 4px);
-  pointer-events: none;
+  height: clamp(300px, 90vh, 500px);
 }
 
 .crt-flicker {
@@ -104,8 +80,8 @@ body {
 }
 
 .analysis {
-  padding: 0px 20px 20px 20px;
-  font-family: 'Courier New', Courier, monospace;
+  padding: clamp(10px, 2vw, 20px);
+  font-family: 'Courier New', monospace;
   color: #00ffcc;
   white-space: pre-wrap;
 }
@@ -113,31 +89,29 @@ body {
 .analysis h2 {
   font-family: 'Press Start 2P', 'Courier New', monospace;
   color: #00ffcc;
-  text-shadow: 0 0 10px #00ffcc;
-  font-size: 1.5rem;
-  margin-top: 0px;
-  margin-bottom: 0px;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  margin: 0;
 }
 
 .analysis p {
-  font-size: 1.1rem;
-  line-height: 1.8;
-  margin-top: 0px;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  line-height: 1.6;
+  margin-top: 10px;
 }
 
-.axis path, .axis line {
+.axis path,
+.axis line {
   stroke: #888;
 }
 
 .axis text {
   fill: #e0e0e0;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 14px;
-  text-shadow: 0 0 5px #00ffcc;
+  font-family: 'Courier New', monospace;
+  font-size: clamp(12px, 2vw, 14px);
 }
 
 .glow {
-  filter: drop-shadow(0 0 10px red) drop-shadow(0 0 20px red);
+  filter: drop-shadow(0 0 10px red);
 }
 
 #preloader {
@@ -151,61 +125,47 @@ body {
   z-index: 1000;
   display: none;
 }
+
 footer {
   text-align: center;
   padding: 20px 0;
-  font-family: 'Courier New', Courier, monospace;
-  color: #e0e0e0;
-  font-size: 0.9rem;
-  border-top: 2px solid #333;
-  background: #000;
-  box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
-  position: relative;
+  font-family: 'Courier New', monospace;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
 }
 
 footer span {
-  color: #ffcc00; /* Yellow for small text */
-  font-size: 0.8rem;
+  color: #ffcc00;
+  font-size: clamp(0.7rem, 1.2vw, 0.8rem);
 }
 
 footer a {
   color: #00ffcc;
   text-decoration: none;
-  text-shadow: 0 0 5px #00ffcc;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
   margin: 0 10px;
 }
 
 footer a:hover {
   color: #ffcc00;
-  text-shadow: 0 0 10px #ffcc00;
 }
 
 footer .org-name {
   font-family: 'Press Start 2P', 'Courier New', monospace;
   color: #ffcc00;
-  text-shadow: 2px 2px 0 #000, 0 0 10px #ffcc00;
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 2vw, 1rem);
   display: block;
   margin-bottom: 10px;
 }
 
-@media (max-width: 640px) {
-  .container {
-    padding: 10px;
+@media (prefers-reduced-motion: reduce) {
+  .chart-section,
+  .ticker,
+  svg,
+  #preloader {
+    transition: none !important;
   }
-  .header h1 {
-    font-size: 1.8rem;
-  }
-  .ticker {
-    font-size: 2.5rem;
-    padding: 10px 15px;
-  }
-  .chart-section {
-    padding: 10px;
-  }
-  /* Adjust the SVG height for mobile devices */
-  .chart-section svg {
-    height: 300px;
+  .crt-flicker,
+  .glow {
+    display: none;
   }
 }
