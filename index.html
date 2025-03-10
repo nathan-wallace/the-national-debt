@@ -4,34 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>US National Debt Tracker</title>
+  <meta name="description" content="Track the U.S. National Debt over time with real-time data visualizations.">
+  <title>U.S. National Debt</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <script defer src="bundle.js"></script>
 </head>
 <body>
-  <div id="preloader"></div>
+  <div id="preloader" aria-hidden="true"></div>
   <div class="container">
     <header class="header">
-      <h1>U.S. National Debt Tracker</h1>
+      <h1>U.S. National Debt</h1>
     </header>
     <main>
-      <section id="chartSection" class="chart-section">
-        <div class="crt-flicker"></div>
+      <section id="chartSection" class="chart-section" aria-labelledby="chartHeader">
         <div id="debtTicker" class="ticker" aria-live="polite">$0.00</div>
-        <svg id="debtChart" width="100%" role="img" aria-label="U.S. National Debt Over Time"></svg>
+        <svg id="debtChart" width="100%" role="img" aria-label="U.S. National Debt Over Time Chart"></svg>
         <div class="analysis">
           <h2 id="analysisHeader">Analysis</h2>
-          <p id="analysisText"></p>
+          <p id="analysisText" aria-live="polite"></p>
         </div>
       </section>
     </main>
     <footer>
-      <span class="org-name">U.S. National Debt Tracker</span>
+      <span class="org-name">U.S. National Debt</span>
       Project by Nathan Wallace | 
-      <a href="https://github.com/nathan-wallace/us-national-debt-tracker" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+      <a href="https://github.com/nathan-wallace/us-national-debt-tracker" target="_blank" rel="noopener noreferrer">GitHub</a>
     </footer>
   </div>
 </body>
