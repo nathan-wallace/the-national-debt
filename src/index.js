@@ -192,8 +192,7 @@ function updateAnalysis(data) {
   analysisText.text(analysisString);
 }
 
-// Show preloader during initialization
-function showPreloader() {
+function showPreloader(debtData) {
   const preloader = d3.select('#preloader');
   const container = d3.select('.container');
   container.style('opacity', '0');
@@ -207,43 +206,279 @@ function showPreloader() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
+  // Retro black background with phosphor glow
   svg.append('rect')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('fill', '#0a0a0a');
+    .attr('fill', '#0a0a0a')
+    .transition()
+    .duration(300)
+    .style('fill', 'url(#phosphor-glow)')
+    .on('start', function() {
+      const defs = svg.append('defs');
+      defs.append('radialGradient')
+        .attr('id', 'phosphor-glow')
+        .attr('cx', '50%')
+        .attr('cy', '50%')
+        .attr('r', '50%')
+        .selectAll('stop')
+        .data([
+          { offset: '0%', color: '#00ffcc', opacity: 0.15 },
+          { offset: '100%', color: '#0a0a0a', opacity: 1 }
+        ])
+        .enter().append('stop')
+        .attr('offset', d => d.offset)
+        .attr('stop-color', d => d.color)
+        .attr('stop-opacity', d => d.opacity);
+    });
 
-  svg.append('text')
-    .attr('x', width / 2)
-    .attr('y', height / 2)
+  // CRT scanlines with interference
+  const scanlines = svg.append('g');
+  for (let i = 0; i < height / 10; i++) {
+    scanlines.append('line')
+      .attr('x1', 0)
+      .attr('y1', i * 10)
+      .attr('x2', width)
+      .attr('y2', i * 10)
+      .attr('stroke', '#00ffcc')
+      .attr('stroke-width', 0.4)
+      .attr('opacity', 0)
+      .transition()
+      .duration(5000)
+      .ease(d3.easeSinInOut)
+      .attr('y1', i * 10 - height)
+      .attr('y2', i * 10 - height)
+      .attr('opacity', 0.08)
+      .attrTween('x2', () => t => width + Math.sin(t * 20 + i) * 20);
+  }
+
+  // 3D Revolving Eye of Providence with enhanced distortion
+  const eyeGroup = svg.append('g')
+    .attr('transform', `translate(${width / 2}, ${height / 2})`);
+
+  const pyramidPointsBase = [
+    { x: 0, y: -130, z: 0 },
+    { x: -100, y: 70, z: -100 },
+    { x: 100, y: 70, z: -100 },
+    { x: 100, y: 70, z: 100 },
+    { x: -100, y: 70, z: 100 }
+  ];
+  const eyePoint = { x: 0, y: -70, z: 0 };
+
+  const project3D = (point, t) => {
+    const scale = 250;
+    const perspective = 700;
+    const rotateY = t * 2.5 * Math.PI;
+    const rotateX = Math.sin(t * 1.5 * Math.PI) * 0.7;
+    const cosY = Math.cos(rotateY);
+    const sinY = Math.sin(rotateY);
+    const cosX = Math.cos(rotateX);
+    const sinX = Math.sin(rotateX);
+
+    let x1 = point.x * cosY + point.z * sinY;
+    let z1 = -point.x * sinY + point.z * cosY;
+    let y1 = point.y * cosX - z1 * sinX;
+    z1 = point.y * sinX + z1 * cosX;
+
+    const distort = Math.sin(t * 6 + z1 * 0.02) * 15 + Math.cos(t * 4 + x1 * 0.01) * 10;
+    x1 += distort;
+    y1 += distort * 0.6;
+
+    const factor = perspective / (perspective + z1 + 250);
+    return {
+      x: x1 * factor * scale,
+      y: y1 * factor * scale
+    };
+  };
+
+  const pyramidFaces = [
+    [0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 1], [1, 2, 3, 4]
+  ];
+
+  pyramidFaces.forEach((face, i) => {
+    const path = eyeGroup.append('path')
+      .attr('fill', i === 4 ? 'none' : '#00ffcc')
+      .attr('stroke', '#00ffcc')
+      .attr('stroke-width', 2.5)
+      .attr('opacity', i === 4 ? 0.5 : 0.2)
+      .style('filter', 'url(#glow)')
+      .transition()
+      .duration(5000)
+      .ease(d3.easeCubicInOut)
+      .attrTween('d', () => {
+        return t => {
+          const points = face.map(index => project3D(pyramidPointsBase[index], t));
+          return d3.line()
+            .x(d => d.x)
+            .y(d => d.y)
+            .curve(d3.curveLinearClosed)(points);
+        };
+      })
+      .attrTween('opacity', () => t => i === 4 ? 0.5 : 0.2 + Math.sin(t * 12) * 0.08);
+  });
+
+  const eye = eyeGroup.append('g');
+  eye.append('circle')
+    .attr('r', 28)
+    .attr('fill', 'none')
+    .attr('stroke', '#00ffcc')
+    .attr('stroke-width', 4)
+    .style('filter', 'url(#glow)')
+    .attr('opacity', 0)
+    .transition()
+    .duration(800)
+    .delay(400)
+    .attr('opacity', 0.8)
+    .transition()
+    .duration(4200)
+    .attrTween('cx', () => t => project3D(eyePoint, t).x)
+    .attrTween('cy', () => t => project3D(eyePoint, t).y)
+    .attrTween('r', () => t => 28 + Math.sin(t * 10) * 5);
+
+  eye.append('circle')
+    .attr('r', 12)
+    .attr('fill', '#00ffcc')
+    .style('filter', 'url(#glow)')
+    .attr('opacity', 0)
+    .transition()
+    .duration(800)
+    .delay(600)
+    .attr('opacity', 1)
+    .transition()
+    .duration(4200)
+    .attrTween('cx', () => t => project3D(eyePoint, t).x + Math.cos(t * 15) * 6)
+    .attrTween('cy', () => t => project3D(eyePoint, t).y + Math.sin(t * 15) * 6);
+
+  svg.append('defs')
+    .append('filter')
+    .attr('id', 'glow')
+    .append('feGaussianBlur')
+    .attr('stdDeviation', '4')
+    .attr('result', 'coloredBlur')
+    .transition()
+    .duration(5000)
+    .attr('stdDeviation', '6');
+
+  const textGroup = svg.append('g')
+    .attr('transform', `translate(${width / 2}, ${height / 2 + 180})`);
+
+  const mainText = textGroup.append('text')
     .attr('text-anchor', 'middle')
     .attr('font-family', 'Press Start 2P')
-    .attr('font-size', isMobile() ? '1.5rem' : '2rem')
+    .attr('font-size', isMobile() ? '1.8rem' : '2.5rem')
     .attr('fill', '#00ffcc')
-    .text('LOADING...');
+    .attr('text-shadow', '0 0 15px #00ffcc')
+    .text('CALCULATING DEBT');
 
-  preloader
-    .transition()
-    .duration(1000)
+  const tickerText = textGroup.append('text')
+    .attr('text-anchor', 'middle')
+    .attr('y', isMobile() ? 40 : 50)
+    .attr('font-family', 'Courier New')
+    .attr('font-size', isMobile() ? '1.2rem' : '1.5rem')
+    .attr('fill', '#00ffcc')
+    .attr('opacity', 0)
+    .text('$0');
+
+  const debtTicker = d3.interval(() => {
+    const debtValue = Math.round(20000000000000 + Math.random() * 1000000000000 * Date.now() * 0.00001);
+    tickerText.text(`$${debtValue.toLocaleString('en-US')}`);
+    tickerText.transition()
+      .duration(100)
+      .attr('opacity', 0.9)
+      .transition()
+      .duration(100)
+      .attr('opacity', 0.7);
+  }, 150);
+
+  const glitchInterval = setInterval(() => {
+    mainText.transition()
+      .duration(80)
+      .attr('x', (Math.random() - 0.5) * 20)
+      .attr('y', (Math.random() - 0.5) * 20)
+      .attr('opacity', 0.85)
+      .transition()
+      .duration(80)
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('opacity', 1);
+  }, 200);
+
+  preloader.transition()
+    .duration(800)
     .style('opacity', 1)
     .transition()
-    .duration(2000)
+    .duration(1200)
+    .on('start', () => {
+      tickerText.transition().duration(400).attr('opacity', 0.7);
+      eyeGroup.transition()
+        .duration(600)
+        .attr('transform', `translate(${width / 2}, ${height / 2}) scale(1.1)`);
+    })
+    .transition()
+    .duration(1200)
+    .on('start', () => {
+      eye.transition()
+        .duration(600)
+        .attr('opacity', 0.9)
+        .transition()
+        .duration(600)
+        .attr('opacity', 0.7);
+    })
+    .transition()
+    .duration(1200)
+    .on('start', () => {
+      tickerText.transition().duration(400).attr('opacity', 0.9);
+      scanlines.transition().duration(600).attr('opacity', 0.12);
+    })
+    .transition()
+    .duration(1000)
     .style('opacity', 0)
     .on('end', () => {
+      debtTicker.stop();
+      clearInterval(glitchInterval);
+      eyeGroup.transition().duration(500).style('opacity', 0);
+      scanlines.transition().duration(500).style('opacity', 0);
+      textGroup.transition().duration(500).style('opacity', 0);
       preloader.remove();
-      container.transition().duration(500).style('opacity', '1');
+      container.transition()
+        .duration(500)
+        .style('opacity', '1')
+        .on('end', () => {
+          // Start chart animation and ticker after preloader and container fade-in
+          if (debtData.length > 0) {
+            drawLineChartAndTicker(debtData);
+            updateAnalysis(debtData);
+          } else {
+            d3.select('#debtTicker').text('Error loading data');
+          }
+        });
+    });
+
+  svg.append('rect')
+    .attr('width', '100%')
+    .attr('height', '100%')
+    .attr('fill', 'none')
+    .style('filter', 'url(#crt-noise)')
+    .style('opacity', 0.25)
+    .on('start', function() {
+      svg.append('defs')
+        .append('filter')
+        .attr('id', 'crt-noise')
+        .append('feTurbulence')
+        .attr('type', 'fractalNoise')
+        .attr('baseFrequency', '0.75')
+        .attr('numOctaves', '3')
+        .attr('stitchTiles', 'stitch')
+        .transition()
+        .duration(5000)
+        .attr('baseFrequency', '0.8');
     });
 }
 
 // Initialize the application
 async function init() {
-  showPreloader();
-  const debtData = await fetchDebtData();
-  if (debtData.length > 0) {
-    drawLineChartAndTicker(debtData);
-    updateAnalysis(debtData);
-  } else {
-    d3.select('#debtTicker').text('Error loading data');
-  }
+  const debtData = await fetchDebtData(); // Fetch data first
+  showPreloader(debtData); // Pass data to preloader, but delay chart rendering
 }
 
 // Handle window resize
