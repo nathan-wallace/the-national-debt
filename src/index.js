@@ -432,17 +432,18 @@ function showPreloader(debtData) {
       scanlines.transition().duration(500).style('opacity', 0);
       textGroup.transition().duration(500).style('opacity', 0);
       preloader.remove();
-      container.transition()
-        .duration(500)
-        .style('opacity', '1')
-        .on('end', () => {
-          if (debtData.length > 0) {
-            drawLineChartAndTicker(debtData);
-            updateAnalysis(debtData);
-          } else {
-            d3.select('#debtTicker').text('Error loading data');
-          }
-        });
+      // Start the chart animation and update analysis immediately
+        if (debtData.length > 0) {
+          drawLineChartAndTicker(debtData);
+          updateAnalysis(debtData);
+        } else {
+          d3.select('#debtTicker').text('Error loading data');
+        }
+
+        // Fade in container concurrently with the chart animation
+        container.transition()
+          .duration(500)
+          .style('opacity', '1');
     });
 
   // Simplified noise overlay (avoiding filter transitions for Safari)
@@ -462,10 +463,41 @@ function showPreloader(debtData) {
     .style('filter', 'url(#crt-noise)')
     .style('opacity', 0.2);
 }
+
+// Helper functions to get and set cookies
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
+function setCookie(name, value, days) {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+}
+
 // Initialize the application
 async function init() {
-  const debtData = await fetchDebtData(); // Fetch data first
-  showPreloader(debtData); // Pass data to preloader, but delay chart rendering
+  const debtData = await fetchDebtData(); // Fetch debt data as before
+
+  // Check if the user has visited before by looking for the 'visited' cookie
+  if (!getCookie('visited')) {
+    // First visit: show preloader and set the cookie for 1 year
+    showPreloader(debtData);
+    setCookie('visited', 'true', 365);
+  } else {
+    // Returning visitor: skip the preloader
+    d3.select('#preloader').remove(); // Remove preloader element if exists
+    d3.select('.container').style('opacity', '1'); // Make container visible immediately
+
+    if (debtData.length > 0) {
+      drawLineChartAndTicker(debtData);
+      updateAnalysis(debtData);
+    } else {
+      d3.select('#debtTicker').text('Error loading data');
+    }
+  }
 }
 
 // Handle window resize
