@@ -55,7 +55,6 @@ body {
 }
 
 .chart-section {
-  background: #000;
   padding: clamp(10px, 2vw, 20px);
   position: relative;
   overflow: hidden;
@@ -89,7 +88,6 @@ body {
   font-family: 'Press Start 2P', 'Courier New', monospace;
   color: #00ffcc;
   font-size: clamp(1.2rem, 3vw, 1.5rem);
-  margin: 0;
 }
 
 .analysis p {
