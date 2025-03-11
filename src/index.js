@@ -265,7 +265,7 @@ function showPreloader(debtData) {
   const svg = preloader.append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('xmlns', 'http://www.w3.org/2000/svg')
+    .attr('xmlns', 'http://www.w3.org/2000/svg') // SVG namespace as per W3C
     .style('position', 'absolute');
 
   const width = window.innerWidth;
@@ -371,76 +371,138 @@ function showPreloader(debtData) {
         .duration(100)
         .attr('fill', '#1a1a1a')
         .on('end', () => {
-          // 2. Surge line sweep (CRT beam startup)
+          // 2. Enhanced surge line sweep (CRT beam startup)
           surgeLine
-            .style('opacity', 1)
+            .style('opacity', 0)
             .transition()
-            .duration(800)
-            .ease(d3.easeLinear)
-            .attr('y2', height)
-            .style('opacity', 0.8)
+            .duration(200)
+            .style('opacity', 1) // Initial power-on flash
             .on('end', () => {
-              surgeLine.remove();
-
-              // 3. Phosphor glow and scanlines fade in
-              glow.transition()
-                .duration(600)
-                .style('opacity', 1);
-
-              scanlines.selectAll('line')
+              surgeLine
+                .attr('stroke-width', 2)
+                .style('filter', 'drop-shadow(0 0 15px #00ffcc)') // Stronger initial glow
                 .transition()
-                .duration(1000)
-                .ease(d3.easeCubicIn)
-                .style('opacity', 0.08);
-
-              // 4. Boot text appears with slight glitch
-              bootText.transition()
-                .duration(400)
-                .style('opacity', 1)
+                .duration(100)
+                .attr('stroke-width', 20) // Widen the beam briefly
+                .style('opacity', 0.9)
+                .transition()
+                .duration(100)
+                .attr('stroke-width', 10) // Pulse back slightly
+                .style('filter', 'drop-shadow(0 0 10px #00ffcc)')
                 .on('end', () => {
-                  const glitch = setInterval(() => {
-                    bootText
-                      .attr('x', width / 2 + (Math.random() - 0.5) * 20)
-                      .style('opacity', 0.9);
-                    setTimeout(() => {
-                      bootText
-                        .attr('x', width / 2)
-                        .style('opacity', 1);
-                    }, 80);
-                  }, 300);
+                  // Main sweep with dynamic effects
+                  const ripple = svg.append('rect') // Flash/ripple effect
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .attr('width', '100%')
+                    .attr('height', '100%')
+                    .attr('fill', '#00ffcc')
+                    .style('opacity', 0);
 
-                  // 5. Noise and final stabilization
-                  noise.transition()
-                    .duration(500)
-                    .style('opacity', 0.2)
+                  surgeLine
                     .transition()
-                    .duration(1000)
-                    .style('opacity', 0.1);
+                    .duration(500) // Slightly longer for drama
+                    .ease(d3.easeQuadInOut) // Smoother acceleration/deceleration
+                    .attr('y2', height)
+                    .attrTween('stroke-width', () => {
+                      return t => {
+                        // Oscillate width for a "power surge" feel
+                        return 5 + Math.sin(t * Math.PI * 4) * 5;
+                      };
+                    })
+                    .style('opacity', 0.7)
+                    .attrTween('filter', () => {
+                      return t => {
+                        // Intensify glow mid-sweep
+                        const glowSize = 10 + Math.sin(t * Math.PI) * 10;
+                        return `drop-shadow(0 0 ${glowSize}px #00ffcc)`;
+                      };
+                    })
+                    .on('start', () => {
+                      // Add a screen flash/ripple as the beam moves
+                      ripple
+                        .transition()
+                        .duration(200)
+                        .style('opacity', 0.2)
+                        .transition()
+                        .duration(300)
+                        .style('opacity', 0)
+                        .on('end', () => ripple.remove());
+                    })
+                    .on('end', () => {
+                      // Final flicker and removal
+                      surgeLine
+                        .transition()
+                        .duration(150)
+                        .style('opacity', 0.3)
+                        .transition()
+                        .duration(100)
+                        .style('opacity', 0)
+                        .on('end', () => {
+                          surgeLine.remove();
 
-                  setTimeout(() => {
-                    clearInterval(glitch);
-                    bootText.transition()
-                      .duration(300)
-                      .style('opacity', 1)
-                      .attr('x', width / 2);
+                          // 3. Phosphor glow and scanlines fade in
+                          glow.transition()
+                            .duration(600)
+                            .style('opacity', 1);
 
-                    // 6. Fade out preloader
-                    preloader.transition()
-                      .duration(800)
-                      .style('opacity', 0)
-                      .on('end', () => {
-                        preloader.remove();
-                        if (debtData.length > 0) {
-                          drawLineChartAndTicker(debtData);
-                          updateAnalysis(debtData);
-                        } else {
-                          d3.select('#debtTicker').text('Error loading data');
-                        }
-                        container.transition()
-                          .duration(500)
-                          .style('opacity', '1');
-                      });
-                  }, 1200);
+                          scanlines.selectAll('line')
+                            .transition()
+                            .duration(1000)
+                            .ease(d3.easeCubicIn)
+                            .style('opacity', 0.08);
+
+                          // 4. Boot text appears with slight glitch
+                          bootText.transition()
+                            .duration(400)
+                            .style('opacity', 1)
+                            .on('end', () => {
+                              const glitch = setInterval(() => {
+                                bootText
+                                  .attr('x', width / 2 + (Math.random() - 0.5) * 20)
+                                  .style('opacity', 0.9);
+                                setTimeout(() => {
+                                  bootText
+                                    .attr('x', width / 2)
+                                    .style('opacity', 1);
+                                }, 80);
+                              }, 300);
+
+                              // 5. Noise and final stabilization
+                              noise.transition()
+                                .duration(500)
+                                .style('opacity', 0.2)
+                                .transition()
+                                .duration(1000)
+                                .style('opacity', 0.1);
+
+                              setTimeout(() => {
+                                clearInterval(glitch);
+                                bootText.transition()
+                                  .duration(300)
+                                  .style('opacity', 1)
+                                  .attr('x', width / 2);
+
+                                // 6. Fade out preloader
+                                preloader.transition()
+                                  .duration(800)
+                                  .style('opacity', 0)
+                                  .on('end', () => {
+                                    preloader.remove();
+                                    if (debtData.length > 0) {
+                                      drawLineChartAndTicker(debtData);
+                                      updateAnalysis(debtData);
+                                    } else {
+                                      d3.select('#debtTicker').text('Error loading data');
+                                    }
+                                    container.transition()
+                                      .duration(500)
+                                      .style('opacity', '1');
+                                  });
+                              }, 1200);
+                            });
+                        });
+                    });
                 });
             });
         });
