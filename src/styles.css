@@ -134,14 +134,14 @@ footer span {
   font-size: clamp(0.7rem, 1.2vw, 0.8rem);
 }
 
-footer a {
+footer a, a {
   color: #00ffcc;
   text-decoration: underline;
   transition: color 0.3s ease;
   margin: 0 10px;
 }
 
-footer a:hover {
+footer a:hover, a:hover {
   text-decoration: none;
 }
 
