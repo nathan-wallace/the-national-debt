@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 const isMobile = () => window.innerWidth <= 640;
 
 // Dynamic SVG height
-const getSvgHeight = () => (isMobile() ? 300 : 500);
+const getSvgHeight = () => (isMobile() ? 250 : 400);
 
 // Determine time frame for data (last 30 years or full range)
 function getTimeFrame(data) {
@@ -156,6 +156,15 @@ function drawLineChartAndTicker(data) {
       };
     });
 }
+
+// Prevent animation on touch scroll
+let isScrolling;
+window.addEventListener('touchmove', () => {
+  clearTimeout(isScrolling);
+  isScrolling = setTimeout(() => {
+    // Do nothing on touch scroll to prevent re-animation
+  }, 66);
+}, { passive: true });
 
 function updateAnalysis(data) {
   const { startDate, endDate } = getTimeFrame(data);
