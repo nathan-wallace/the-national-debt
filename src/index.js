@@ -14,9 +14,9 @@ function getTimeFrame(data) {
   const minYear = minDate.getFullYear();
   const maxYear = maxDate.getFullYear();
 
-  if (maxYear - minYear >= 30) {
+  if (maxYear - minYear >= 40) {
     return {
-      startDate: new Date(maxYear - 30, 0, 1),
+      startDate: new Date(maxYear - 40, 0, 1),
       endDate: new Date(maxYear, 11, 31),
     };
   }
@@ -256,27 +256,28 @@ function showPreloader(debtData) {
   const svg = preloader.append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('xmlns', 'http://www.w3.org/2000/svg') // Explicit SVG namespace for Safari
+    .attr('xmlns', 'http://www.w3.org/2000/svg')
     .style('position', 'absolute');
 
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  // Background with simplified gradient (avoiding complex transitions for Safari)
-  svg.append('rect')
+  // Initial black screen
+  const screen = svg.append('rect')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('fill', '#0a0a0a');
+    .attr('fill', '#000000');
 
+  // Define CRT glow gradient
   svg.append('defs')
     .append('radialGradient')
-    .attr('id', 'phosphor-glow')
+    .attr('id', 'crt-boot-glow')
     .attr('cx', '50%')
     .attr('cy', '50%')
-    .attr('r', '50%')
+    .attr('r', '60%')
     .selectAll('stop')
     .data([
-      { offset: '0%', color: '#00ffcc', opacity: 0.15 },
+      { offset: '0%', color: '#00ffcc', opacity: 0.3 },
       { offset: '100%', color: '#0a0a0a', opacity: 1 }
     ])
     .enter().append('stop')
@@ -284,239 +285,157 @@ function showPreloader(debtData) {
     .attr('stop-color', d => d.color)
     .attr('stop-opacity', d => d.opacity);
 
-  svg.append('rect')
+  // Glow effect layer
+  const glow = svg.append('rect')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('fill', 'url(#phosphor-glow)')
-    .attr('opacity', 0)
-    .transition()
-    .duration(300)
-    .attr('opacity', 1);
+    .attr('fill', 'url(#crt-boot-glow)')
+    .style('opacity', 0);
 
-  // Reduced scanlines for performance, using CSS opacity for broader support
+  // Scanlines group
   const scanlines = svg.append('g');
-  for (let i = 0; i < height / 20; i++) { // Fewer scanlines for Safari performance
+  const scanlineCount = Math.floor(height / 4);
+  for (let i = 0; i < scanlineCount; i++) {
     scanlines.append('line')
       .attr('x1', 0)
-      .attr('y1', i * 20)
+      .attr('y1', i * 4)
       .attr('x2', width)
-      .attr('y2', i * 20)
+      .attr('y2', i * 4)
       .attr('stroke', '#00ffcc')
-      .attr('stroke-width', 0.4)
-      .style('opacity', 0)
-      .transition()
-      .duration(5000)
-      .ease(d3.easeSinInOut)
-      .style('opacity', 0.08)
-      .attr('y1', i * 20 - height)
-      .attr('y2', i * 20 - height);
+      .attr('stroke-width', 0.6)
+      .style('opacity', 0);
   }
 
-  // 3D Eye of Providence with simplified transforms
-  const eyeGroup = svg.append('g')
-    .attr('transform', `translate(${width / 2}, ${height / 2})`);
-
-  const pyramidPointsBase = [
-    { x: 0, y: -130, z: 0 },
-    { x: -100, y: 70, z: -100 },
-    { x: 100, y: 70, z: -100 },
-    { x: 100, y: 70, z: 100 },
-    { x: -100, y: 70, z: 100 }
-  ];
-  const eyePoint = { x: 0, y: -70, z: 0 };
-
-  const project3D = (point, t) => {
-    const scale = 250;
-    const perspective = 700;
-    const rotateY = t * 2 * Math.PI; // Slightly slower rotation for stability
-    const rotateX = Math.sin(t * Math.PI) * 0.5; // Reduced tilt for Safari
-    const cosY = Math.cos(rotateY);
-    const sinY = Math.sin(rotateY);
-    const cosX = Math.cos(rotateX);
-    const sinX = Math.sin(rotateX);
-
-    let x1 = point.x * cosY + point.z * sinY;
-    let z1 = -point.x * sinY + point.z * cosY;
-    let y1 = point.y * cosX - z1 * sinX;
-    z1 = point.y * sinX + z1 * cosX;
-
-    // Simplified distortion for better Safari support
-    const distort = Math.sin(t * 4) * 10;
-    x1 += distort;
-    y1 += distort * 0.5;
-
-    const factor = perspective / (perspective + z1 + 250);
-    return {
-      x: x1 * factor * scale,
-      y: y1 * factor * scale
-    };
-  };
-
-  const pyramidFaces = [
-    [0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 1], [1, 2, 3, 4]
-  ];
-
-  pyramidFaces.forEach((face, i) => {
-    const path = eyeGroup.append('path')
-      .attr('fill', i === 4 ? 'none' : '#00ffcc')
-      .attr('stroke', '#00ffcc')
-      .attr('stroke-width', 2)
-      .style('opacity', i === 4 ? 0.5 : 0.2)
-      .transition()
-      .duration(5000)
-      .ease(d3.easeCubicInOut)
-      .attrTween('d', () => {
-        return t => {
-          const points = face.map(index => project3D(pyramidPointsBase[index], t));
-          return d3.line()
-            .x(d => d.x)
-            .y(d => d.y)
-            .curve(d3.curveLinearClosed)(points);
-        };
-      });
-  });
-
-  const eye = eyeGroup.append('g');
-  eye.append('circle')
-    .attr('r', 28)
-    .attr('fill', 'none')
+  // Power surge effect (vertical line sweeping down)
+  const surgeLine = svg.append('line')
+    .attr('x1', width / 2)
+    .attr('x2', width / 2)
+    .attr('y1', 0)
+    .attr('y2', 0)
     .attr('stroke', '#00ffcc')
-    .attr('stroke-width', 3)
-    .style('opacity', 0)
-    .transition()
-    .duration(800)
-    .delay(400)
-    .style('opacity', 0.8)
-    .transition()
-    .duration(4200)
-    .attrTween('cx', () => t => project3D(eyePoint, t).x)
-    .attrTween('cy', () => t => project3D(eyePoint, t).y);
+    .attr('stroke-width', 4)
+    .style('filter', 'drop-shadow(0 0 10px #00ffcc)')
+    .style('opacity', 0);
 
-  eye.append('circle')
-    .attr('r', 12)
-    .attr('fill', '#00ffcc')
-    .style('opacity', 0)
-    .transition()
-    .duration(800)
-    .delay(600)
-    .style('opacity', 1)
-    .transition()
-    .duration(4200)
-    .attrTween('cx', () => t => project3D(eyePoint, t).x + Math.cos(t * 10) * 4)
-    .attrTween('cy', () => t => project3D(eyePoint, t).y + Math.sin(t * 10) * 4);
-
-  // Text and ticker with simplified transitions
-  const textGroup = svg.append('g')
-    .attr('transform', `translate(${width / 2}, ${height / 2 + 180})`);
-
-  const mainText = textGroup.append('text')
+  // Boot text
+  const bootText = svg.append('text')
+    .attr('x', width / 2)
+    .attr('y', height / 2)
     .attr('text-anchor', 'middle')
     .attr('font-family', 'Press Start 2P')
-    .attr('font-size', isMobile() ? '1.8rem' : '2.5rem')
+    .attr('font-size', isMobile() ? '2rem' : '3rem')
     .attr('fill', '#00ffcc')
-    .style('-webkit-text-shadow', '0 0 15px #00ffcc') // Vendor prefix for Safari
     .style('text-shadow', '0 0 15px #00ffcc')
-    .text('CALCULATING DEBT');
+    .text('CALCULATING DEBT')
+    .style('opacity', 0);
 
-  const tickerText = textGroup.append('text')
-    .attr('text-anchor', 'middle')
-    .attr('y', isMobile() ? 40 : 50)
-    .attr('font-family', 'Courier New')
-    .attr('font-size', isMobile() ? '1.2rem' : '1.5rem')
-    .attr('fill', '#00ffcc')
-    .style('opacity', 0)
-    .text('$0');
-
-  const debtTicker = d3.interval(() => {
-    const debtValue = Math.round(20000000000000 + Math.random() * 1000000000000);
-    tickerText.text(`$${debtValue.toLocaleString('en-US')}`);
-    tickerText.transition()
-      .duration(200)
-      .style('opacity', 0.9)
-      .transition()
-      .duration(200)
-      .style('opacity', 0.7);
-  }, 300); // Slower interval for Safari stability
-
-  const glitchInterval = setInterval(() => {
-    mainText
-      .attr('x', (Math.random() - 0.5) * 15)
-      .attr('y', (Math.random() - 0.5) * 15)
-      .style('opacity', 0.85);
-    setTimeout(() => {
-      mainText
-        .attr('x', 0)
-        .attr('y', 0)
-        .style('opacity', 1);
-    }, 80);
-  }, 300); // Use setTimeout for glitch to avoid transition issues in Safari
-
-  // Animation sequence with simplified transitions
-  preloader.transition()
-    .duration(800)
-    .style('opacity', '1')
-    .on('end', () => {
-      tickerText.transition().duration(400).style('opacity', 0.7);
-      eyeGroup.transition()
-        .duration(600)
-        .attr('transform', `translate(${width / 2}, ${height / 2}) scale(1.1)`);
-    })
-    .transition()
-    .duration(1200)
-    .on('start', () => {
-      eye.transition()
-        .duration(600)
-        .style('opacity', 0.9)
-        .transition()
-        .duration(600)
-        .style('opacity', 0.7);
-    })
-    .transition()
-    .duration(1200)
-    .on('start', () => {
-      tickerText.transition().duration(400).style('opacity', 0.9);
-      scanlines.transition().duration(600).style('opacity', 0.12);
-    })
-    .transition()
-    .duration(1000)
-    .style('opacity', 0)
-    .on('end', () => {
-      debtTicker.stop();
-      clearInterval(glitchInterval);
-      eyeGroup.transition().duration(500).style('opacity', 0);
-      scanlines.transition().duration(500).style('opacity', 0);
-      textGroup.transition().duration(500).style('opacity', 0);
-      preloader.remove();
-      // Start the chart animation and update analysis immediately
-        if (debtData.length > 0) {
-          drawLineChartAndTicker(debtData);
-          updateAnalysis(debtData);
-        } else {
-          d3.select('#debtTicker').text('Error loading data');
-        }
-
-        // Fade in container concurrently with the chart animation
-        container.transition()
-          .duration(500)
-          .style('opacity', '1');
-    });
-
-  // Simplified noise overlay (avoiding filter transitions for Safari)
+  // Noise overlay
   svg.append('defs')
     .append('filter')
     .attr('id', 'crt-noise')
     .append('feTurbulence')
     .attr('type', 'fractalNoise')
-    .attr('baseFrequency', '0.75')
-    .attr('numOctaves', '2') // Reduced for performance
+    .attr('baseFrequency', '0.8')
+    .attr('numOctaves', '1')
     .attr('stitchTiles', 'stitch');
 
-  svg.append('rect')
+  const noise = svg.append('rect')
     .attr('width', '100%')
     .attr('height', '100%')
     .attr('fill', 'none')
     .style('filter', 'url(#crt-noise)')
-    .style('opacity', 0.2);
+    .style('opacity', 0);
+
+  // Animation sequence
+  preloader.transition()
+    .duration(200)
+    .style('opacity', 1)
+    .on('end', () => {
+      // 1. Initial flicker (power on)
+      screen.transition()
+        .duration(100)
+        .attr('fill', '#1a1a1a')
+        .transition()
+        .duration(50)
+        .attr('fill', '#000000')
+        .transition()
+        .duration(100)
+        .attr('fill', '#1a1a1a')
+        .on('end', () => {
+          // 2. Surge line sweep (CRT beam startup)
+          surgeLine
+            .style('opacity', 1)
+            .transition()
+            .duration(800)
+            .ease(d3.easeLinear)
+            .attr('y2', height)
+            .style('opacity', 0.8)
+            .on('end', () => {
+              surgeLine.remove();
+
+              // 3. Phosphor glow and scanlines fade in
+              glow.transition()
+                .duration(600)
+                .style('opacity', 1);
+
+              scanlines.selectAll('line')
+                .transition()
+                .duration(1000)
+                .ease(d3.easeCubicIn)
+                .style('opacity', 0.08);
+
+              // 4. Boot text appears with slight glitch
+              bootText.transition()
+                .duration(400)
+                .style('opacity', 1)
+                .on('end', () => {
+                  const glitch = setInterval(() => {
+                    bootText
+                      .attr('x', width / 2 + (Math.random() - 0.5) * 20)
+                      .style('opacity', 0.9);
+                    setTimeout(() => {
+                      bootText
+                        .attr('x', width / 2)
+                        .style('opacity', 1);
+                    }, 80);
+                  }, 300);
+
+                  // 5. Noise and final stabilization
+                  noise.transition()
+                    .duration(500)
+                    .style('opacity', 0.2)
+                    .transition()
+                    .duration(1000)
+                    .style('opacity', 0.1);
+
+                  setTimeout(() => {
+                    clearInterval(glitch);
+                    bootText.transition()
+                      .duration(300)
+                      .style('opacity', 1)
+                      .attr('x', width / 2);
+
+                    // 6. Fade out preloader
+                    preloader.transition()
+                      .duration(800)
+                      .style('opacity', 0)
+                      .on('end', () => {
+                        preloader.remove();
+                        if (debtData.length > 0) {
+                          drawLineChartAndTicker(debtData);
+                          updateAnalysis(debtData);
+                        } else {
+                          d3.select('#debtTicker').text('Error loading data');
+                        }
+                        container.transition()
+                          .duration(500)
+                          .style('opacity', '1');
+                      });
+                  }, 1200);
+                });
+            });
+        });
+    });
 }
 
 // Helper functions to get and set cookies
