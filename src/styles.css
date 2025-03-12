@@ -2,185 +2,186 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base styles with light/dark variants */
 @layer base {
-  html {
-    @apply h-screen w-screen overflow-x-hidden antialiased;
-  }
+    html {
+        @apply h-screen w-screen overflow-x-hidden antialiased;
+    }
 
-  body {
-    @apply font-mono text-black bg-white min-h-screen; /* Light mode: black text, white bg */
-    @apply dark:text-green-500 dark:bg-black; /* Dark mode: green text, black bg */
-  }
+    body {
+        @apply font-mono text-black bg-white min-h-screen;
+        @apply dark:text-green-500 dark:bg-black;
+    }
 
-  .container {
-    @apply max-w-7xl mx-auto p-[clamp(10px,2vw,20px)] opacity-0;
-  }
+    .container {
+        @apply max-w-7xl mx-auto p-[clamp(10px,2vw,20px)] opacity-0;
+    }
 
-  .header {
-    @apply text-center mb-0;
-  }
+    .header {
+        @apply text-center mb-0;
+    }
 
-  .header h1 {
-    @apply font-['Press_Start_2P'] text-[clamp(1.8rem,4vw,2.5rem)] text-black mb-0;
-    @apply dark:text-green-500;
-  }
+    .header h1 {
+        @apply font-['Press_Start_2P'] text-[clamp(1.8rem,4vw,2.5rem)] text-black mb-0;
+        @apply dark:text-green-500;
+    }
 
-  #debtTicker {
-    @apply text-[clamp(1.5rem,4vw,3.5rem)] text-white bg-black border-2 border-black p-[clamp(8px,2vw,15px)] rounded-lg text-right whitespace-nowrap w-full; /* Light mode: white text, black bg */
-    @apply dark:text-green-500 dark:border-green-500 dark:bg-black; /* Dark mode unchanged */
-  }
+    #debtTicker {
+        @apply text-[clamp(1.5rem,4vw,3.5rem)] text-white bg-black border-2 border-black p-[clamp(8px,2vw,15px)] rounded-lg text-right whitespace-nowrap w-full;
+        @apply dark:text-green-500 dark:border-green-500 dark:bg-black;
+    }
 
-  .chart-section {
-    @apply relative overflow-hidden p-[clamp(8px,2vw,20px)] h-auto;
-  }
+    .chart-section {
+        @apply relative overflow-hidden p-[clamp(8px,2vw,20px)] h-auto;
+    }
 
-  #debtChart {
-    @apply rounded-[15px] w-full h-[clamp(250px,80vh,400px)] block;
-  }
+    #debtChart {
+        @apply rounded-[15px] w-full h-[clamp(250px,80vh,400px)] block;
+    }
 
-  .analysis {
-    @apply p-[clamp(8px,2vw,20px)];
-  }
+    .debt-in-words {
+        @apply p-[clamp(8px,2vw,20px)];
+    }
 
-  .analysis h2 {
-    @apply font-['Press_Start_2P'] text-[clamp(1rem,2.5vw,1.5rem)] text-black;
-    @apply dark:text-green-500;
-  }
+    .debt-in-words h2 {
+        @apply font-['Press_Start_2P'] text-[clamp(1rem,2.5vw,1.5rem)] text-black;
+        @apply dark:text-green-500;
+    }
 
-  .analysis p {
-    @apply text-[clamp(0.8rem,1.8vw,1.1rem)] leading-[1.5] mt-0 text-black;
-    @apply dark:text-green-500;
-  }
+    .debt-in-words p {
+        @apply text-[clamp(0.8rem,1.8vw,1.1rem)] leading-[1.5] mt-2 text-black;
+        @apply dark:text-green-500;
+    }
 
-  footer {
-    @apply mt-5 text-center p-[clamp(15px,2vw,20px)] text-[clamp(0.7rem,1.2vw,0.9rem)] text-black;
-    @apply dark:text-green-500;
-  }
+    .analysis {
+        @apply p-[clamp(8px,2vw,20px)];
+    }
 
-  .org-name {
-    @apply font-['Press_Start_2P'] text-[clamp(0.9rem,2vw,1rem)] block mb-[10px] text-black;
-    @apply dark:text-green-500;
-  }
+    .analysis h2 {
+        @apply font-['Press_Start_2P'] text-[clamp(1rem,2.5vw,1.5rem)] text-black;
+        @apply dark:text-green-500;
+    }
+
+    .analysis p {
+        @apply text-[clamp(0.8rem,1.8vw,1.1rem)] leading-[1.5] mt-0 text-black;
+        @apply dark:text-green-500;
+    }
+
+    footer {
+        @apply mt-5 text-center p-[clamp(15px,2vw,20px)] text-[clamp(0.7rem,1.2vw,0.9rem)] text-black;
+        @apply dark:text-green-500;
+    }
+
+    .org-name {
+        @apply font-['Press_Start_2P'] text-[clamp(0.9rem,2vw,1rem)] block mb-[10px] text-black;
+        @apply dark:text-green-500;
+    }
 }
 
-/* Custom styles with dark mode support */
 .crt-flicker {
-  @apply absolute inset-0 bg-black/10 opacity-0 pointer-events-none;
-  @apply dark:bg-green-500/10; /* Slight green tint for terminal effect */
+    @apply absolute inset-0 bg-black/10 opacity-0 pointer-events-none;
+    @apply dark:bg-green-500/10;
 }
 
 a {
-  @apply underline text-black;
-  @apply dark:text-green-500;
+    @apply underline text-black;
+    @apply dark:text-green-500;
 }
 
 a:hover {
-  @apply no-underline;
+    @apply no-underline;
 }
 
 .axis path,
 .axis line {
-  @apply stroke-gray-500;
-  @apply dark:stroke-green-500; /* Green lines for terminal vibe */
+    @apply stroke-gray-500;
+    @apply dark:stroke-green-500;
 }
 
 .axis text {
-  @apply fill-gray-700 font-['Courier_New'] text-[clamp(10px,1.8vw,14px)];
-  @apply dark:fill-gray-200; /* Grey labels in dark mode */
+    @apply fill-gray-700 font-['Courier_New'] text-[clamp(10px,1.8vw,14px)];
+    @apply dark:fill-gray-200;
 }
 
 .glow {
-  @apply drop-shadow-[0_0_10px_red];
-  @apply dark:drop-shadow-[0_0_10px_rgb(34,197,94)]; /* green-500 glow */
+    @apply drop-shadow-[0_0_10px_red];
+    @apply dark:drop-shadow-[0_0_10px_rgb(34,197,94)];
 }
 
-/* Impressive Theme Toggle Button with SVG Icons */
 #themeToggle {
-  @apply fixed bottom-4 right-4 z-50 p-2 rounded-lg transition-all duration-300 ease-in-out;
-  /* Light mode: Black button with white SVG */
-  @apply bg-black border-2 border-gray-700 shadow-[0_0_10px_rgba(0,0,0,0.5)] hover:scale-110 hover:shadow-[0_0_20px_rgba(255,255,255,0.8)];
-  /* Dark mode: Green button with glowing effect */
-  @apply dark:bg-black dark:border-green-500 dark:shadow-[0_0_15px_rgba(34,197,94,0.7)] dark:hover:shadow-[0_0_25px_rgba(34,197,94,1)];
+    @apply fixed bottom-4 right-4 z-50 p-2 rounded-lg transition-all duration-300 ease-in-out;
+    @apply bg-black border-2 border-gray-700 shadow-[0_0_10px_rgba(0,0,0,0.5)] hover:scale-110 hover:shadow-[0_0_20px_rgba(255,255,255,0.8)];
+    @apply dark:bg-black dark:border-green-500 dark:shadow-[0_0_15px_rgba(34,197,94,0.7)] dark:hover:shadow-[0_0_25px_rgba(34,197,94,1)];
 }
 
-/* SVG Icon Styling */
 #themeToggle svg {
-  @apply w-6 h-6 md:w-8 md:h-8;
-  /* Light mode: White fill */
-  @apply text-white;
-  /* Dark mode: Green fill */
-  @apply dark:text-green-500;
+    @apply w-6 h-6 md:w-8 md:h-8;
+    @apply text-white;
+    @apply dark:text-green-500;
 }
 
-/* Pulse animation on click */
 #themeToggle:active {
-  @apply animate-pulse scale-95;
+    @apply animate-pulse scale-95;
 }
 
-/* CRT flicker effect */
 #themeToggle::after {
-  content: '';
-  @apply absolute inset-0 bg-white/10 opacity-0 pointer-events-none;
-  @apply dark:bg-green-500/20;
-  animation: crt-flicker 4s infinite;
+    content: '';
+    @apply absolute inset-0 bg-white/10 opacity-0 pointer-events-none;
+    @apply dark:bg-green-500/20;
+    animation: crt-flicker 4s infinite;
 }
 
-/* Hover glow enhancement */
 #themeToggle:hover::after {
-  @apply opacity-30;
+    @apply opacity-30;
 }
 
-/* Custom keyframes for CRT flicker */
 @keyframes crt-flicker {
-  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 0; }
-  20%, 24%, 55% { opacity: 0.2; }
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 0; }
+    20%, 24%, 55% { opacity: 0.2; }
 }
 
-/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .chart-section,
-  #debtTicker,
-  #debtChart,
-  #preloader,
-  #themeToggle {
-    @apply !transition-none;
-  }
-  
-  .crt-flicker,
-  .glow,
-  #themeToggle::after {
-    @apply hidden;
-  }
-  
-  #themeToggle:active {
-    @apply !animate-none scale-100;
-  }
+    .chart-section,
+    #debtTicker,
+    #debtChart,
+    #preloader,
+    #themeToggle {
+        @apply transition-none;
+    }
+    
+    .crt-flicker,
+    .glow,
+    #themeToggle::after {
+        @apply hidden;
+    }
+    
+    #themeToggle:active {
+        @apply animate-none scale-100;
+    }
 }
 
-/* Mobile Adjustments */
 @media (max-width: 640px) {
-  #debtTicker {
-    @apply text-[clamp(1.2rem,3.5vw,2rem)];
-  }
-  
-  .chart-section #debtChart {
-    @apply h-[250px];
-  }
-  
-  .analysis p {
-    @apply text-[clamp(0.75rem,1.5vw,0.95rem)];
-  }
-  
-  .header h1 {
-    @apply text-[clamp(1.2rem,3vw,1.8rem)];
-  }
-  
-  #themeToggle {
-    @apply p-1 bottom-2 right-2;
-  }
-  
-  #themeToggle svg {
-    @apply w-5 h-5;
-  }
+    #debtTicker {
+        @apply text-[clamp(1.2rem,3.5vw,2rem)];
+    }
+    
+    .chart-section #debtChart {
+        @apply h-[250px];
+    }
+    
+    .debt-in-words p,
+    .analysis p {
+        @apply text-[clamp(0.75rem,1.5vw,0.95rem)];
+    }
+    
+    .header h1 {
+        @apply text-[clamp(1.2rem,3vw,1.8rem)];
+    }
+    
+    #themeToggle {
+        @apply p-1 bottom-2 right-2;
+    }
+    
+    #themeToggle svg {
+        @apply w-5 h-5;
+    }
 }

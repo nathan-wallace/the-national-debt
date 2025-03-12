@@ -59,16 +59,18 @@
       </svg>
     </button>
     <main>
-    <main>
-      
       <section id="chartSection" class="chart-section" aria-labelledby="chartHeader">
         <div id="debtTicker" class="mb-4 ticker" aria-live="polite">$0.00</div>
         <svg id="debtChart" role="img" aria-label="U.S. National Debt Over Time Chart"></svg>
       </section>
-      <div class="analysis">
+      <section id="debtInWords" class="debt-in-words">
+        <h2 id="debtInWordsHeader">The Debt in Full</h2>
+        <p id="debtInWordsText" aria-live="polite"></p>
+      </section>
+      <section class="analysis">
         <h2 id="analysisHeader">Analysis</h2>
         <p id="analysisText" aria-live="polite"></p>
-      </div>
+      </section>
     </main>
     <footer>
       <span class="org-name">The National Debt</span>
