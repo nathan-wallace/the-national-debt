@@ -7,7 +7,7 @@ const isMobile = () => window.innerWidth <= 640;
 // Dynamic SVG height
 const getSvgHeight = () => (isMobile() ? 250 : 400);
 
-// Determine time frame for data (last 30 years or full range)
+// Determine time frame for data (last 40 years or full range)
 function getTimeFrame(data) {
   const minDate = d3.min(data, d => d.date);
   const maxDate = d3.max(data, d => d.date);
@@ -48,7 +48,7 @@ async function fetchDebtData() {
   }
 }
 
-// Draw the line chart and animate the ticker
+// Draw the line chart and animate the ticker with theme support
 function drawLineChartAndTicker(data) {
   const svg = d3.select('#debtChart');
   const height = getSvgHeight();
@@ -71,17 +71,16 @@ function drawLineChartAndTicker(data) {
     .domain([d3.min(filteredData, d => d.debt) * 0.95, d3.max(filteredData, d => d.debt) * 1.05])
     .range([chartHeight, 0]);
 
-  // Fade in chart
   svg.style('opacity', 0).transition().duration(1000).style('opacity', 1);
 
-  // Chart Title
+  // Chart Title with theme-aware color
   svg.append('text')
     .attr('x', margin.left + width / 2)
     .attr('y', margin.top / 2)
     .attr('text-anchor', 'middle')
     .attr('font-family', 'Press Start 2P')
     .attr('font-size', isMobile() ? '1rem' : '1.2rem')
-    .attr('fill', '#00ffcc')
+    .attr('class', 'fill-black dark:fill-green-500')
     .text('U.S. National Debt Over Time');
 
   // X-Axis
@@ -99,7 +98,7 @@ function drawLineChartAndTicker(data) {
     .attr('text-anchor', 'middle')
     .attr('font-family', 'Courier New')
     .attr('font-size', '14px')
-    .attr('fill', '#e0e0e0')
+    .attr('class', 'fill-gray-700 dark:fill-gray-200')
     .text('Year');
 
   // Y-Axis
@@ -114,7 +113,7 @@ function drawLineChartAndTicker(data) {
     .attr('text-anchor', 'middle')
     .attr('font-family', 'Courier New')
     .attr('font-size', '14px')
-    .attr('fill', '#e0e0e0')
+    .attr('class', 'fill-gray-700 dark:fill-gray-200')
     .text('Debt (Trillions USD)');
 
   const line = d3.line()
@@ -125,7 +124,7 @@ function drawLineChartAndTicker(data) {
   const path = g.append('path')
     .datum(filteredData)
     .attr('fill', 'none')
-    .attr('stroke', '#00ffcc')
+    .attr('class', 'stroke-black dark:stroke-green-500')
     .attr('stroke-width', isMobile() ? 2 : 3)
     .attr('d', line);
 
@@ -161,11 +160,10 @@ function drawLineChartAndTicker(data) {
 let isScrolling;
 window.addEventListener('touchmove', () => {
   clearTimeout(isScrolling);
-  isScrolling = setTimeout(() => {
-    // Do nothing on touch scroll to prevent re-animation
-  }, 66);
+  isScrolling = setTimeout(() => {}, 66);
 }, { passive: true });
 
+// Update analysis text
 function updateAnalysis(data) {
   const { startDate, endDate } = getTimeFrame(data);
   const filteredData = data.filter(d => d.date >= startDate && d.date <= endDate);
@@ -181,7 +179,6 @@ function updateAnalysis(data) {
   const startDebt = yearlyData[startYear];
   const endDebt = yearlyData[endYear];
 
-  // Existing metrics
   const totalGrowth = ((endDebt - startDebt) / startDebt) * 100;
   const cagr = (Math.pow(endDebt / startDebt, 1 / (endYear - startYear)) - 1) * 100;
 
@@ -193,10 +190,7 @@ function updateAnalysis(data) {
   const highestGrowth = annualGrowth.reduce((prev, curr) => (curr.growth > prev.growth ? curr : prev), annualGrowth[0]);
   const lowestGrowth = annualGrowth.reduce((prev, curr) => (curr.growth < prev.growth ? curr : prev), annualGrowth[0]);
 
-  // New metric: Average annual debt increase
   const avgAnnualIncrease = (endDebt - startDebt) / (endYear - startYear);
-
-  // New metric: Debt doubling time
   let doublingYear = null;
   const doubleStartDebt = startDebt * 2;
   for (let i = 0; i < years.length; i++) {
@@ -207,29 +201,10 @@ function updateAnalysis(data) {
   }
   const doublingTime = doublingYear ? doublingYear - startYear : null;
 
-  // New metric: Volatility (standard deviation of annual growth rates)
   const meanGrowth = annualGrowth.reduce((sum, d) => sum + d.growth, 0) / annualGrowth.length;
   const variance = annualGrowth.reduce((sum, d) => sum + Math.pow(d.growth - meanGrowth, 2), 0) / annualGrowth.length;
   const growthVolatility = Math.sqrt(variance);
 
-  // New metric: Longest streak of debt increase
-  let longestIncrease = { length: 0, start: null, end: null };
-  let currentIncrease = { length: 0, start: null, end: null };
-  for (let i = 1; i < years.length; i++) {
-    if (yearlyData[years[i]] > yearlyData[years[i - 1]]) {
-      if (currentIncrease.length === 0) currentIncrease.start = years[i - 1];
-      currentIncrease.length++;
-      currentIncrease.end = years[i];
-    } else {
-      if (currentIncrease.length > longestIncrease.length) {
-        longestIncrease = { ...currentIncrease };
-      }
-      currentIncrease = { length: 0, start: null, end: null };
-    }
-  }
-  if (currentIncrease.length > longestIncrease.length) longestIncrease = currentIncrease;
-
-  // Build the analysis string
   const analysisText = d3.select('#analysisText');
   analysisText.style('font-size', isMobile() ? '0.9rem' : '1.1rem');
 
@@ -243,19 +218,14 @@ function updateAnalysis(data) {
 
   analysisString += `The annual growth rate volatility was ${growthVolatility.toFixed(2)}%, indicating ${growthVolatility > 10 ? 'high' : 'moderate'} variability in debt increases. `;
 
-  if (longestIncrease.length > 0) {
-    analysisString += `The longest consecutive period of debt increase spanned ${longestIncrease.length} years, from ${longestIncrease.start} to ${longestIncrease.end}. `;
-  }
-
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   const today = new Date().toLocaleDateString('en-US', options);
   analysisString += `Data accessed on ${today}. Source: <a href="https://fiscaldata.treasury.gov" target="_blank" rel="noopener noreferrer">U.S. Treasury Fiscal Data.</a>`;
 
-  // Use .html() to ensure that the HTML within the string is rendered
   analysisText.html(analysisString);
 }
 
-
+// Show preloader with green-500 for terminal effect
 function showPreloader(debtData) {
   const preloader = d3.select('#preloader');
   const container = d3.select('.container');
@@ -265,19 +235,17 @@ function showPreloader(debtData) {
   const svg = preloader.append('svg')
     .attr('width', '100%')
     .attr('height', '100%')
-    .attr('xmlns', 'http://www.w3.org/2000/svg') // SVG namespace as per W3C
+    .attr('xmlns', 'http://www.w3.org/2000/svg')
     .style('position', 'absolute');
 
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  // Initial black screen
   const screen = svg.append('rect')
     .attr('width', '100%')
     .attr('height', '100%')
     .attr('fill', '#000000');
 
-  // Define CRT glow gradient
   svg.append('defs')
     .append('radialGradient')
     .attr('id', 'crt-boot-glow')
@@ -286,7 +254,7 @@ function showPreloader(debtData) {
     .attr('r', '60%')
     .selectAll('stop')
     .data([
-      { offset: '0%', color: '#00ffcc', opacity: 0.3 },
+      { offset: '0%', color: '#22c55e', opacity: 0.3 }, // green-500
       { offset: '100%', color: '#0a0a0a', opacity: 1 }
     ])
     .enter().append('stop')
@@ -294,14 +262,12 @@ function showPreloader(debtData) {
     .attr('stop-color', d => d.color)
     .attr('stop-opacity', d => d.opacity);
 
-  // Glow effect layer
   const glow = svg.append('rect')
     .attr('width', '100%')
     .attr('height', '100%')
     .attr('fill', 'url(#crt-boot-glow)')
     .style('opacity', 0);
 
-  // Scanlines group
   const scanlines = svg.append('g');
   const scanlineCount = Math.floor(height / 4);
   for (let i = 0; i < scanlineCount; i++) {
@@ -310,35 +276,32 @@ function showPreloader(debtData) {
       .attr('y1', i * 4)
       .attr('x2', width)
       .attr('y2', i * 4)
-      .attr('stroke', '#00ffcc')
+      .attr('stroke', '#22c55e') // green-500
       .attr('stroke-width', 0.6)
       .style('opacity', 0);
   }
 
-  // Power surge effect (vertical line sweeping down)
   const surgeLine = svg.append('line')
     .attr('x1', width / 2)
     .attr('x2', width / 2)
     .attr('y1', 0)
     .attr('y2', 0)
-    .attr('stroke', '#00ffcc')
+    .attr('stroke', '#22c55e') // green-500
     .attr('stroke-width', 4)
-    .style('filter', 'drop-shadow(0 0 10px #00ffcc)')
+    .style('filter', 'drop-shadow(0 0 10px #22c55e)') // green-500 glow
     .style('opacity', 0);
 
-  // Boot text
   const bootText = svg.append('text')
     .attr('x', width / 2)
     .attr('y', height / 2)
     .attr('text-anchor', 'middle')
     .attr('font-family', 'Press Start 2P')
     .attr('font-size', isMobile() ? '2rem' : '3rem')
-    .attr('fill', '#00ffcc')
-    .style('text-shadow', '0 0 15px #00ffcc')
+    .attr('fill', '#22c55e') // green-500
+    .style('text-shadow', '0 0 15px #22c55e') // green-500 shadow
     .text('CALCULATING DEBT')
     .style('opacity', 0);
 
-  // Noise overlay
   svg.append('defs')
     .append('filter')
     .attr('id', 'crt-noise')
@@ -355,12 +318,10 @@ function showPreloader(debtData) {
     .style('filter', 'url(#crt-noise)')
     .style('opacity', 0);
 
-  // Animation sequence
   preloader.transition()
     .duration(200)
     .style('opacity', 1)
     .on('end', () => {
-      // 1. Initial flicker (power on)
       screen.transition()
         .duration(100)
         .attr('fill', '#1a1a1a')
@@ -371,55 +332,44 @@ function showPreloader(debtData) {
         .duration(100)
         .attr('fill', '#1a1a1a')
         .on('end', () => {
-          // 2. Enhanced surge line sweep (CRT beam startup)
           surgeLine
             .style('opacity', 0)
             .transition()
             .duration(200)
-            .style('opacity', 1) // Initial power-on flash
+            .style('opacity', 1)
             .on('end', () => {
               surgeLine
                 .attr('stroke-width', 2)
-                .style('filter', 'drop-shadow(0 0 15px #00ffcc)') // Stronger initial glow
+                .style('filter', 'drop-shadow(0 0 15px #22c55e)')
                 .transition()
                 .duration(100)
-                .attr('stroke-width', 20) // Widen the beam briefly
+                .attr('stroke-width', 20)
                 .style('opacity', 0.9)
                 .transition()
                 .duration(100)
-                .attr('stroke-width', 10) // Pulse back slightly
-                .style('filter', 'drop-shadow(0 0 10px #00ffcc)')
+                .attr('stroke-width', 10)
+                .style('filter', 'drop-shadow(0 0 10px #22c55e)')
                 .on('end', () => {
-                  // Main sweep with dynamic effects
-                  const ripple = svg.append('rect') // Flash/ripple effect
+                  const ripple = svg.append('rect')
                     .attr('x', 0)
                     .attr('y', 0)
                     .attr('width', '100%')
                     .attr('height', '100%')
-                    .attr('fill', '#00ffcc')
+                    .attr('fill', '#22c55e')
                     .style('opacity', 0);
 
                   surgeLine
                     .transition()
-                    .duration(500) // Slightly longer for drama
-                    .ease(d3.easeQuadInOut) // Smoother acceleration/deceleration
+                    .duration(500)
+                    .ease(d3.easeQuadInOut)
                     .attr('y2', height)
-                    .attrTween('stroke-width', () => {
-                      return t => {
-                        // Oscillate width for a "power surge" feel
-                        return 5 + Math.sin(t * Math.PI * 4) * 5;
-                      };
-                    })
+                    .attrTween('stroke-width', () => t => 5 + Math.sin(t * Math.PI * 4) * 5)
                     .style('opacity', 0.7)
-                    .attrTween('filter', () => {
-                      return t => {
-                        // Intensify glow mid-sweep
-                        const glowSize = 10 + Math.sin(t * Math.PI) * 10;
-                        return `drop-shadow(0 0 ${glowSize}px #00ffcc)`;
-                      };
+                    .attrTween('filter', () => t => {
+                      const glowSize = 10 + Math.sin(t * Math.PI) * 10;
+                      return `drop-shadow(0 0 ${glowSize}px #22c55e)`;
                     })
                     .on('start', () => {
-                      // Add a screen flash/ripple as the beam moves
                       ripple
                         .transition()
                         .duration(200)
@@ -430,7 +380,6 @@ function showPreloader(debtData) {
                         .on('end', () => ripple.remove());
                     })
                     .on('end', () => {
-                      // Final flicker and removal
                       surgeLine
                         .transition()
                         .duration(150)
@@ -440,67 +389,29 @@ function showPreloader(debtData) {
                         .style('opacity', 0)
                         .on('end', () => {
                           surgeLine.remove();
-
-                          // 3. Phosphor glow and scanlines fade in
-                          glow.transition()
-                            .duration(600)
-                            .style('opacity', 1);
-
-                          scanlines.selectAll('line')
-                            .transition()
-                            .duration(1000)
-                            .ease(d3.easeCubicIn)
-                            .style('opacity', 0.08);
-
-                          // 4. Boot text appears with slight glitch
-                          bootText.transition()
-                            .duration(400)
-                            .style('opacity', 1)
-                            .on('end', () => {
-                              const glitch = setInterval(() => {
-                                bootText
-                                  .attr('x', width / 2 + (Math.random() - 0.5) * 20)
-                                  .style('opacity', 0.9);
-                                setTimeout(() => {
-                                  bootText
-                                    .attr('x', width / 2)
-                                    .style('opacity', 1);
-                                }, 80);
-                              }, 300);
-
-                              // 5. Noise and final stabilization
-                              noise.transition()
-                                .duration(500)
-                                .style('opacity', 0.2)
-                                .transition()
-                                .duration(1000)
-                                .style('opacity', 0.1);
-
-                              setTimeout(() => {
-                                clearInterval(glitch);
-                                bootText.transition()
-                                  .duration(300)
-                                  .style('opacity', 1)
-                                  .attr('x', width / 2);
-
-                                // 6. Fade out preloader
-                                preloader.transition()
-                                  .duration(800)
-                                  .style('opacity', 0)
-                                  .on('end', () => {
-                                    preloader.remove();
-                                    if (debtData.length > 0) {
-                                      drawLineChartAndTicker(debtData);
-                                      updateAnalysis(debtData);
-                                    } else {
-                                      d3.select('#debtTicker').text('Error loading data');
-                                    }
-                                    container.transition()
-                                      .duration(500)
-                                      .style('opacity', '1');
-                                  });
-                              }, 1200);
-                            });
+                          glow.transition().duration(600).style('opacity', 1);
+                          scanlines.selectAll('line').transition().duration(1000).ease(d3.easeCubicIn).style('opacity', 0.08);
+                          bootText.transition().duration(400).style('opacity', 1).on('end', () => {
+                            const glitch = setInterval(() => {
+                              bootText.attr('x', width / 2 + (Math.random() - 0.5) * 20).style('opacity', 0.9);
+                              setTimeout(() => bootText.attr('x', width / 2).style('opacity', 1), 80);
+                            }, 300);
+                            noise.transition().duration(500).style('opacity', 0.2).transition().duration(1000).style('opacity', 0.1);
+                            setTimeout(() => {
+                              clearInterval(glitch);
+                              bootText.transition().duration(300).style('opacity', 1).attr('x', width / 2);
+                              preloader.transition().duration(800).style('opacity', 0).on('end', () => {
+                                preloader.remove();
+                                if (debtData.length > 0) {
+                                  drawLineChartAndTicker(debtData);
+                                  updateAnalysis(debtData);
+                                } else {
+                                  d3.select('#debtTicker').text('Error loading data');
+                                }
+                                container.transition().duration(500).style('opacity', '1');
+                              });
+                            }, 1200);
+                          });
                         });
                     });
                 });
@@ -509,7 +420,7 @@ function showPreloader(debtData) {
     });
 }
 
-// Helper functions to get and set cookies
+// Cookie helpers
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -522,20 +433,68 @@ function setCookie(name, value, days) {
   document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
 }
 
+// Theme initialization with SVG toggle
+function initializeTheme() {
+  const themeToggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
+
+  // Wait for DOM to be ready and set up theme toggle
+  function setupTheme() {
+    const lightIcon = document.getElementById('lightIcon'); // Sun icon
+    const darkIcon = document.getElementById('darkIcon');   // Moon icon
+
+    if (!lightIcon || !darkIcon) {
+      console.error('Theme icons not found in DOM');
+      return;
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Set initial state: Moon in light mode (click to go dark), Sun in dark mode (click to go light)
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      html.classList.add('dark');
+      darkIcon.classList.add('hidden');    // Hide moon in dark mode
+      lightIcon.classList.remove('hidden'); // Show sun in dark mode
+    } else {
+      html.classList.remove('dark');
+      lightIcon.classList.add('hidden');    // Hide sun in light mode
+      darkIcon.classList.remove('hidden');  // Show moon in light mode
+    }
+
+    // Toggle behavior: Switch icon to the mode you'll enter
+    themeToggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      const isDark = html.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      if (isDark) {
+        darkIcon.classList.add('hidden');    // Hide moon when entering dark mode
+        lightIcon.classList.remove('hidden'); // Show sun to switch to light
+      } else {
+        lightIcon.classList.add('hidden');    // Hide sun when entering light mode
+        darkIcon.classList.remove('hidden');  // Show moon to switch to dark
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupTheme);
+  } else {
+    setupTheme();
+  }
+}
+
 // Initialize the application
 async function init() {
-  const debtData = await fetchDebtData(); // Fetch debt data as before
+  const debtData = await fetchDebtData();
+  initializeTheme();
 
-  // Check if the user has visited before by looking for the 'visited' cookie
   if (!getCookie('visited')) {
-    // First visit: show preloader and set the cookie for 1 year
     showPreloader(debtData);
     setCookie('visited', 'true', 365);
   } else {
-    // Returning visitor: skip the preloader
-    d3.select('#preloader').remove(); // Remove preloader element if exists
-    d3.select('.container').style('opacity', '1'); // Make container visible immediately
-
+    d3.select('#preloader').remove();
+    d3.select('.container').style('opacity', '1');
     if (debtData.length > 0) {
       drawLineChartAndTicker(debtData);
       updateAnalysis(debtData);
@@ -552,10 +511,6 @@ function handleResize() {
   });
 }
 
-init();
-window.addEventListener('resize', debounce(handleResize, 200));
-
-// Debounce function to limit resize event calls
 function debounce(func, wait) {
   let timeout;
   return function (...args) {
@@ -563,3 +518,6 @@ function debounce(func, wait) {
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
 }
+
+init();
+window.addEventListener('resize', debounce(handleResize, 200));

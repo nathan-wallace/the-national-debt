@@ -11,7 +11,7 @@
   <meta name="author" content="Nathan Wallace">
   <meta name="robots" content="index, follow">
 
-  <!-- Open Graph (OG) Tags for Social Sharing -->
+  <!-- Open Graph (OG) Tags -->
   <meta property="og:title" content="The National Debt Tracker">
   <meta property="og:description" content="Visualize the U.S. National Debt with real-time data and interactive charts. Source: U.S. Treasury Fiscal Data.">
   <meta property="og:type" content="website">
@@ -29,10 +29,7 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-  <!-- Critical CSS -->
-  <style>
-    html{position:relative;height:100vh;width:100vw;overflow-x:hidden;-webkit-text-size-adjust:100%;margin:0}html::before{content:'';position:fixed;inset:0;box-shadow:inset 0 0 20px #00ffcc;pointer-events:none;z-index:9999}body{font-family:'Courier New',Courier,monospace;color:#00ffcc;margin:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;background:radial-gradient(circle at center,#1a1a1a 0%,#000 100%) #0a0a0a;min-height:100vh}.container{max-width:1400px;margin:0 auto;padding:clamp(10px,2vw,20px);opacity:0}.header{text-align:center;margin-bottom:0}.header h1{font-family:'Press Start 2P','Courier New',monospace;font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:0}#preloader{position:fixed;inset:0;background:#000;opacity:0;z-index:1000;display:none}
-  </style>
+  
   <title>The National Debt</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,25 +38,41 @@
   <script defer src="bundle.js"></script>
 </head>
 <body>
-  <div class="scrolling-background"></div>
-  <div id="preloader" aria-hidden="true"></div>
+  <div id="preloader" class="fixed inset-0 bg-black opacity-0 z-[1000] hidden" aria-hidden="true"></div>
   <div class="container">
-    <header class="header">
+    <header class="header mt-4 mb-4 flex justify-center items-center">
       <h1>The National Debt</h1>
     </header>
+    <button id="themeToggle" aria-label="Toggle theme">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <defs>
+          <symbol id="light-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4" fill="currentColor" />
+            <path fill="none" stroke="currentColor" stroke-width="1.5" d="M12 4v-2M12 20v2M6.34 6.34l-1.41-1.41M17.66 17.66l1.41 1.41M4 12h-2M20 12h2M6.34 17.66l-1.41 1.41M17.66 6.34l1.41-1.41" />
+          </symbol>
+          <symbol id="dark-icon" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </symbol>
+        </defs>
+        <use id="lightIcon" href="#light-icon" class="light-icon" />
+        <use id="darkIcon" href="#dark-icon" class="dark-icon hidden" />
+      </svg>
+    </button>
     <main>
+    <main>
+      
       <section id="chartSection" class="chart-section" aria-labelledby="chartHeader">
-        <div id="debtTicker" class="ticker" aria-live="polite">$0.00</div>
-        <svg id="debtChart" width="100%" role="img" aria-label="U.S. National Debt Over Time Chart"></svg>
-        <div class="analysis">
-          <h2 id="analysisHeader">Analysis</h2>
-          <p id="analysisText" aria-live="polite"></p>
-        </div>
+        <div id="debtTicker" class="mb-4 ticker" aria-live="polite">$0.00</div>
+        <svg id="debtChart" role="img" aria-label="U.S. National Debt Over Time Chart"></svg>
       </section>
+      <div class="analysis">
+        <h2 id="analysisHeader">Analysis</h2>
+        <p id="analysisText" aria-live="polite"></p>
+      </div>
     </main>
     <footer>
       <span class="org-name">The National Debt</span>
-      <a href="https://github.com/nathan-wallace/us-national-debt-tracker" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+      <a href="https://github.com/nathan-wallace/us-national-debt-tracker" target="_blank" rel="noopener noreferrer" class="mx-[10px]">GitHub Repo</a>
     </footer>
   </div>
 </body>
