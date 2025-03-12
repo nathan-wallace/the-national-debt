@@ -2,16 +2,15 @@ import * as d3 from 'd3';
 import { isMobile, getSvgHeight } from './utils.js';
 import { getTimeFrame } from './debtData.js';
 
-// Function to draw the chart in its final state (no animation)
-export function drawLineChartStatic(data) {
+export function drawLineChartStatic(data, isPrint = false) {
     const svg = d3.select('#debtChart');
-    const height = getSvgHeight();
+    const height = isPrint ? 252 : getSvgHeight(); // 3.5in = 252pt for print
     svg.attr('height', height);
 
-    const margin = isMobile()
+    const margin = isMobile() && !isPrint
         ? { top: 40, right: 20, bottom: 80, left: 50 }
         : { top: 60, right: 60, bottom: 100, left: 80 };
-    const width = parseInt(svg.style('width')) - margin.left - margin.right;
+    const width = isPrint ? 504 - margin.left - margin.right : parseInt(svg.style('width')) - margin.left - margin.right; // 7in = 504pt for print
     const chartHeight = height - margin.top - margin.bottom;
 
     // Clear previous content
@@ -32,7 +31,7 @@ export function drawLineChartStatic(data) {
         .attr('y', margin.top / 2)
         .attr('text-anchor', 'middle')
         .attr('font-family', 'Press Start 2P')
-        .attr('font-size', isMobile() ? '1rem' : '1.2rem')
+        .attr('font-size', isPrint ? '12pt' : (isMobile() ? '1rem' : '1.2rem'))
         .attr('class', 'fill-black dark:fill-green-500')
         .text('U.S. National Debt Over Time');
 
@@ -40,7 +39,7 @@ export function drawLineChartStatic(data) {
     g.append('g')
         .attr('transform', `translate(0,${chartHeight})`)
         .attr('class', 'axis')
-        .call(d3.axisBottom(x).ticks(isMobile() ? d3.timeYear.every(5) : d3.timeYear.every(1)).tickFormat(d3.timeFormat('%Y')))
+        .call(d3.axisBottom(x).ticks(isPrint || isMobile() ? d3.timeYear.every(5) : d3.timeYear.every(1)).tickFormat(d3.timeFormat('%Y')))
         .selectAll('text')
         .attr('transform', 'rotate(45)')
         .style('text-anchor', 'start');
@@ -50,14 +49,14 @@ export function drawLineChartStatic(data) {
         .attr('y', height - 20)
         .attr('text-anchor', 'middle')
         .attr('font-family', 'Courier New')
-        .attr('font-size', '14px')
+        .attr('font-size', isPrint ? '10pt' : '14px')
         .attr('class', 'fill-gray-700 dark:fill-gray-200')
         .text('Year');
 
     // Y-axis
     g.append('g')
         .attr('class', 'axis')
-        .call(d3.axisLeft(y).ticks(isMobile() ? 4 : 6).tickFormat(d => `$${d3.format('.2s')(d)}`));
+        .call(d3.axisLeft(y).ticks(isPrint || isMobile() ? 4 : 6).tickFormat(d => `$${d3.format('.2s')(d)}`));
 
     svg.append('text')
         .attr('transform', 'rotate(-90)')
@@ -65,7 +64,7 @@ export function drawLineChartStatic(data) {
         .attr('y', margin.left / 3)
         .attr('text-anchor', 'middle')
         .attr('font-family', 'Courier New')
-        .attr('font-size', '14px')
+        .attr('font-size', isPrint ? '10pt' : '14px')
         .attr('class', 'fill-gray-700 dark:fill-gray-200')
         .text('Debt (Trillions USD)');
 
@@ -79,7 +78,7 @@ export function drawLineChartStatic(data) {
         .datum(filteredData)
         .attr('fill', 'none')
         .attr('class', 'stroke-black dark:stroke-green-500')
-        .attr('stroke-width', isMobile() ? 2 : 3)
+        .attr('stroke-width', isPrint ? 2 : (isMobile() ? 2 : 3))
         .attr('d', line);
 
     // Add the red dot at the final data point
@@ -87,7 +86,7 @@ export function drawLineChartStatic(data) {
     g.append('circle')
         .attr('cx', x(lastDataPoint.date))
         .attr('cy', y(lastDataPoint.debt))
-        .attr('r', isMobile() ? 6 : 8)
+        .attr('r', isPrint ? 5 : (isMobile() ? 6 : 8))
         .attr('fill', 'red')
         .attr('class', 'glow');
 
