@@ -2,150 +2,186 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Base Component Styles */
-.ticker {
-  font-family: 'Courier New', monospace;
-  font-size: clamp(1.5rem, 4vw, 3.5rem);
-  color: #00ffcc;
-  background: #000;
-  border: 2px solid #00ffcc;
-  padding: clamp(8px, 2vw, 15px) clamp(12px, 3vw, 25px);
-  border-radius: 10px;
-  text-align: right;
-  overflow: hidden;
-  white-space: nowrap;
-  width: 100%;
-  box-sizing: border-box;
-}
+@layer base {
+    html {
+        @apply h-screen w-screen overflow-x-hidden antialiased;
+    }
 
-.chart-section {
-  padding: clamp(8px, 2vw, 20px);
-  position: relative;
-  overflow: hidden;
-  height: auto;
-}
+    body {
+        @apply font-mono text-black bg-white min-h-screen;
+        @apply dark:text-green-500 dark:bg-black;
+    }
 
-.chart-section svg {
-  border-radius: 15px;
-  width: 100%;
-  height: clamp(250px, 80vh, 400px);
-  display: block;
+    .container {
+        @apply max-w-7xl mx-auto p-[clamp(10px,2vw,20px)] opacity-0;
+    }
+
+    .header {
+        @apply text-center mb-0;
+    }
+
+    .header h1 {
+        @apply font-['Press_Start_2P'] text-[clamp(1.8rem,4vw,2.5rem)] text-black mb-0;
+        @apply dark:text-green-500;
+    }
+
+    #debtTicker {
+        @apply text-[clamp(1.5rem,4vw,3.5rem)] text-white bg-black border-2 border-black p-[clamp(8px,2vw,15px)] rounded-lg text-right whitespace-nowrap w-full;
+        @apply dark:text-green-500 dark:border-green-500 dark:bg-black;
+    }
+
+    .chart-section {
+        @apply relative overflow-hidden p-[clamp(8px,2vw,20px)] h-auto;
+    }
+
+    #debtChart {
+        @apply rounded-[15px] w-full h-[clamp(250px,80vh,400px)] block;
+    }
+
+    .debt-in-words {
+        @apply p-[clamp(8px,2vw,20px)];
+    }
+
+    .debt-in-words h2 {
+        @apply font-['Press_Start_2P'] text-[clamp(1rem,2.5vw,1.5rem)] text-black;
+        @apply dark:text-green-500;
+    }
+
+    .debt-in-words p {
+        @apply text-[clamp(0.8rem,1.8vw,1.1rem)] leading-[1.5] mt-2 text-black;
+        @apply dark:text-green-500;
+    }
+
+    .analysis {
+        @apply p-[clamp(8px,2vw,20px)];
+    }
+
+    .analysis h2 {
+        @apply font-['Press_Start_2P'] text-[clamp(1rem,2.5vw,1.5rem)] text-black;
+        @apply dark:text-green-500;
+    }
+
+    .analysis p {
+        @apply text-[clamp(0.8rem,1.8vw,1.1rem)] leading-[1.5] mt-2 text-black;
+        @apply dark:text-green-500;
+    }
+
+    footer {
+        @apply mt-5 text-center p-[clamp(15px,2vw,20px)] text-[clamp(0.7rem,1.2vw,0.9rem)] text-black;
+        @apply dark:text-green-500;
+    }
+
+    .org-name {
+        @apply font-['Press_Start_2P'] text-[clamp(0.9rem,2vw,1rem)] block mb-[10px] text-black;
+        @apply dark:text-green-500;
+    }
 }
 
 .crt-flicker {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.1);
-  opacity: 0;
-  pointer-events: none;
+    @apply absolute inset-0 bg-black/10 opacity-0 pointer-events-none;
+    @apply dark:bg-green-500/10;
 }
 
-.analysis {
-  padding: clamp(8px, 2vw, 20px);
-  font-family: 'Courier New', monospace;
-  color: #00ffcc;
+a {
+    @apply underline text-black;
+    @apply dark:text-green-500;
 }
 
-.analysis h2 {
-  font-family: 'Press Start 2P', 'Courier New', monospace;
-  color: #00ffcc;
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
+a:hover {
+    @apply no-underline;
 }
 
-.analysis p {
-  font-size: clamp(0.8rem, 1.8vw, 1.1rem);
-  line-height: 1.5;
-  margin-top: 0;
-}
-
-/* Chart Elements */
 .axis path,
 .axis line {
-  stroke: #888;
+    @apply stroke-gray-500;
+    @apply dark:stroke-green-500;
 }
 
 .axis text {
-  fill: #e0e0e0;
-  font-family: 'Courier New', monospace;
-  font-size: clamp(10px, 1.8vw, 14px);
+    @apply fill-gray-700 font-['Courier_New'] text-[clamp(10px,1.8vw,14px)];
+    @apply dark:fill-gray-200;
 }
 
 .glow {
-  filter: drop-shadow(0 0 10px red);
+    @apply drop-shadow-[0_0_10px_red];
+    @apply dark:drop-shadow-[0_0_10px_rgb(34,197,94)];
 }
 
-/* Footer Styles */
-footer {
-  text-align: center;
-  padding: clamp(15px, 2vw, 20px);
-  font-family: 'Courier New', monospace;
-  font-size: clamp(0.7rem, 1.2vw, 0.9rem);
+#themeToggle {
+    @apply fixed bottom-4 right-4 z-50 p-2 rounded-lg transition-all duration-300 ease-in-out;
+    @apply bg-black border-2 border-gray-700 shadow-[0_0_10px_rgba(0,0,0,0.5)] hover:scale-110 hover:shadow-[0_0_20px_rgba(255,255,255,0.8)];
+    @apply dark:bg-black dark:border-green-500 dark:shadow-[0_0_15px_rgba(34,197,94,0.7)] dark:hover:shadow-[0_0_25px_rgba(34,197,94,1)];
 }
 
-footer span {
-  color: #ffcc00;
-  font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+#themeToggle svg {
+    @apply w-6 h-6 md:w-8 md:h-8;
+    @apply text-white;
+    @apply dark:text-green-500;
 }
 
-footer a,
-a {
-  color: #00ffcc;
-  text-decoration: underline;
-  transition: color 0.3s ease;
-  margin: 0 10px;
+#themeToggle:active {
+    @apply animate-pulse scale-95;
 }
 
-footer a:hover,
-a:hover {
-  text-decoration: none;
+#themeToggle::after {
+    content: '';
+    @apply absolute inset-0 bg-white/10 opacity-0 pointer-events-none;
+    @apply dark:bg-green-500/20;
+    animation: crt-flicker 4s infinite;
 }
 
-footer .org-name {
-  font-family: 'Press Start 2P', 'Courier New', monospace;
-  color: #00ffcc;
-  font-size: clamp(0.9rem, 2vw, 1rem);
-  display: block;
-  margin-bottom: 10px;
+#themeToggle:hover::after {
+    @apply opacity-30;
 }
 
-.footer-image {
-  max-width: 100px;
-  height: auto;
-  margin: 10px;
-  border: 2px solid #00ffcc;
-  border-radius: 5px;
+@keyframes crt-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 0; }
+    20%, 24%, 55% { opacity: 0.2; }
 }
 
-/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .chart-section,
-  .ticker,
-  svg,
-  #preloader {
-    transition: none !important;
-  }
-  
-  .crt-flicker,
-  .glow {
-    display: none;
-  }
+    .chart-section,
+    #debtTicker,
+    #debtChart,
+    #preloader,
+    #themeToggle {
+        @apply transition-none;
+    }
+    
+    .crt-flicker,
+    .glow,
+    #themeToggle::after {
+        @apply hidden;
+    }
+    
+    #themeToggle:active {
+        @apply animate-none scale-100;
+    }
 }
 
-/* Mobile Adjustments */
 @media (max-width: 640px) {
-  .ticker {
-    font-size: clamp(1.2rem, 3.5vw, 2rem);
-  }
-  
-  .chart-section svg {
-    height: 250px;
-  }
-  
-  .analysis p {
-    font-size: clamp(0.75rem, 1.5vw, 0.95rem);
-  }
-  
-  .header h1 {
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
-  }
+    #debtTicker {
+        @apply text-[clamp(1.2rem,3.5vw,2rem)];
+    }
+    
+    .chart-section #debtChart {
+        @apply h-[250px];
+    }
+    
+    .debt-in-words p,
+    .analysis p {
+        @apply text-[clamp(0.75rem,1.5vw,0.95rem)];
+    }
+    
+    .header h1 {
+        @apply text-[clamp(1.2rem,3vw,1.8rem)];
+    }
+    
+    #themeToggle {
+        @apply p-1 bottom-2 right-2;
+    }
+    
+    #themeToggle svg {
+        @apply w-5 h-5;
+    }
 }

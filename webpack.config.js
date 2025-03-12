@@ -24,8 +24,6 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        // This copies all files from public to the dist folder,
-        // including index.html and the images directory.
         { from: 'public', to: '' },
       ],
     }),
@@ -38,5 +36,8 @@ module.exports = {
     hot: true,
     open: true,
     historyApiFallback: true,
+  },
+  resolve: {
+    extensions: ['.js'], // Add this to ensure .js files are resolved
   },
 };
