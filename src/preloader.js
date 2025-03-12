@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 import { drawLineChartAndTicker } from './chart.js';
 import { updateDebtInWords, updateAnalysis } from './uiUpdates.js';
 import { isMobile } from './utils.js';
