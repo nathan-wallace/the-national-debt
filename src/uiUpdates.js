@@ -5,10 +5,8 @@ import { getTimeFrame } from './debtData.js';
 export function updateDebtInWords(data) {
     const latestDebt = data[data.length - 1].debt;
     const debtInWordsText = d3.select('#debtInWordsText');
+    debtInWordsText.style('font-size', isMobile() ? '0.9rem' : '1.1rem');
     
-    // Base font size for consistency with mobile/desktop
-    const baseFontSize = isMobile() ? 0.9 : 1.1; // in rem
-
     const wholeDollars = Math.floor(latestDebt);
     const cents = Math.round((latestDebt % 1) * 100);
     const debtWords = numberToWords(wholeDollars) + ' dollars';
@@ -23,29 +21,10 @@ export function updateDebtInWords(data) {
         .replace('thousand ', 'thousand, ')
         .trim();
 
-    // Split the formatted text into individual words
-    const words = formattedDebtWords.split(' ');
-
-    // Clear existing content
-    debtInWordsText.html('');
-
-    // Add the introductory text
-    debtInWordsText.append('span')
-        .style('font-size', `${baseFontSize}rem`);
-
-    // Calculate font size decrease: start large (e.g., 2x base) and taper to 0.5x base
-    const startFontSize = baseFontSize * 2; // Starting size (e.g., 2.2rem desktop, 1.8rem mobile)
-    const endFontSize = baseFontSize * 0.5; // Ending size (e.g., 0.55rem desktop, 0.45rem mobile)
-    const step = (startFontSize - endFontSize) / (words.length - 1); // Linear decrease per word
-
-    // Append each word with a decreasing font size
-    words.forEach((word, index) => {
-        const fontSize = startFontSize - (index * step);
-        debtInWordsText.append('span')
-            .text(word + (index < words.length - 1 ? ' ' : '.')) // Add space except for last word
-            .style('font-size', `${fontSize}rem`)
-            .style('font-weight', index === 0 ? 'bold' : 'normal'); // Bold the first word for emphasis
-    });
+    debtInWordsText.html(
+        `The U.S. national debt stands at ` +
+        `${formattedDebtWords}.`
+    );
 }
 
 export function updateAnalysis(data) {
