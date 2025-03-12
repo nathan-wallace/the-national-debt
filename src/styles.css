@@ -48,7 +48,7 @@
     }
 
     .debt-in-words p {
-        @apply text-[clamp(0.8rem,1.8vw,1.1rem)] leading-[1.5] mt-2 text-black;
+        @apply text-[clamp(0.8rem,1.8vw,1.1rem)] leading-[1.5] text-black;
         @apply dark:text-green-500;
     }
 
