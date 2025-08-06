@@ -121,7 +121,17 @@ export async function drawLineChartAndTicker(data) {
         .attr('class', 'event-group cursor-pointer')
         .attr('transform', d => `translate(${x(d.date)},${y(d.debt)})`)
         .style('opacity', 0)
-        .on('click', (_, d) => showEventModal(d));
+        .on('click', function (_, d) {
+            showEventModal(d);
+            const ring = d3.select(this).select('.event-ring');
+            const dot = d3.select(this).select('.event-dot');
+            ring.classed('animate-ping', true);
+            dot.classed('animate-pulse', true);
+            setTimeout(() => {
+                ring.classed('animate-ping', false);
+                dot.classed('animate-pulse', false);
+            }, 2000);
+        });
 
     eventGroups.append('circle')
         .attr('class', 'event-ring stroke-blue-500 dark:stroke-green-500 fill-transparent pointer-events-none opacity-75')
@@ -148,8 +158,14 @@ export async function drawLineChartAndTicker(data) {
         .delay(d => (x(d.date) / width) * animationDuration)
         .style('opacity', 1)
         .on('start', function () {
-            d3.select(this).select('.event-ring').classed('animate-ping', true);
-            d3.select(this).select('.event-dot').classed('animate-pulse', true);
+            const ring = d3.select(this).select('.event-ring');
+            const dot = d3.select(this).select('.event-dot');
+            ring.classed('animate-ping', true);
+            dot.classed('animate-pulse', true);
+            setTimeout(() => {
+                ring.classed('animate-ping', false);
+                dot.classed('animate-pulse', false);
+            }, 2000);
         });
 
     path
