@@ -159,7 +159,7 @@ export async function drawLineChartAndTicker(data) {
         .attr('stroke-width', isMobile() ? 2 : 3);
 
     eventGroups.append('circle')
-        .attr('class', 'event-dot fill-black stroke-white dark:fill-green-500 dark:stroke-green-500')
+        .attr('class', 'event-dot fill-black stroke-white dark:fill-green-500 dark:stroke-black')
         .attr('r', isMobile() ? 4 : 5);
 
     const movingCircle = g.append('circle')
