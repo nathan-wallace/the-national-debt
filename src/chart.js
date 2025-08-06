@@ -3,7 +3,35 @@ import { isMobile, getSvgHeight } from './utils.js';
 import { getTimeFrame, setCustomTimeFrame } from './debtData.js';
 import { updateDebtInWords, updateAnalysis } from './uiUpdates.js';
 
-export function drawLineChartAndTicker(data) {
+let eventsCache = null;
+
+async function fetchEvents() {
+    if (!eventsCache) {
+        const res = await fetch('events.json', { cache: 'no-store' });
+        eventsCache = await res.json();
+        eventsCache.forEach(e => (e.date = new Date(e.date)));
+    }
+    return eventsCache;
+}
+
+const modal = d3.select('#eventModal');
+const modalTitle = d3.select('#eventTitle');
+const modalDesc = d3.select('#eventDescription');
+const modalSource = d3.select('#eventSource');
+
+d3.select('#modalClose').on('click', () => modal.classed('hidden', true));
+modal.on('click', event => {
+    if (event.target === modal.node()) modal.classed('hidden', true);
+});
+
+function showEventModal(evt) {
+    modalTitle.text(evt.title);
+    modalDesc.text(evt.description);
+    modalSource.attr('href', evt.url);
+    modal.classed('hidden', false);
+}
+
+export async function drawLineChartAndTicker(data) {
     const svg = d3.select('#debtChart');
     const height = getSvgHeight();
     svg.attr('height', height);
@@ -78,6 +106,25 @@ export function drawLineChartAndTicker(data) {
         .attr('class', 'stroke-black dark:stroke-green-500')
         .attr('stroke-width', isMobile() ? 2 : 3)
         .attr('d', line);
+
+    const events = await fetchEvents();
+    const formatYM = d3.timeFormat('%Y-%m');
+    const debtLookup = new Map(filteredData.map(d => [formatYM(d.date), d.debt]));
+    const eventPoints = events
+        .map(e => ({ ...e, debt: debtLookup.get(formatYM(e.date)) }))
+        .filter(e => e.debt !== undefined && e.date >= startDate && e.date <= endDate);
+
+    const dots = g.selectAll('.event-dot')
+        .data(eventPoints)
+        .enter()
+        .append('circle')
+        .attr('class', 'event-dot fill-blue-500 stroke-black dark:fill-green-500 dark:stroke-green-500 cursor-pointer')
+        .attr('r', isMobile() ? 4 : 5)
+        .attr('cx', d => x(d.date))
+        .attr('cy', d => y(d.debt))
+        .on('click', (_, d) => showEventModal(d));
+
+    dots.append('title').text(d => d.title);
 
     const movingCircle = g.append('circle')
         .attr('r', isMobile() ? 6 : 8)
