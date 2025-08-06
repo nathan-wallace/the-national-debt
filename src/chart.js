@@ -114,17 +114,25 @@ export async function drawLineChartAndTicker(data) {
         .map(e => ({ ...e, debt: debtLookup.get(formatYM(e.date)) }))
         .filter(e => e.debt !== undefined && e.date >= startDate && e.date <= endDate);
 
-    const dots = g.selectAll('.event-dot')
+    const eventGroups = g.selectAll('.event-group')
         .data(eventPoints)
         .enter()
-        .append('circle')
-        .attr('class', 'event-dot fill-blue-500 stroke-black dark:fill-green-500 dark:stroke-green-500 cursor-pointer')
-        .attr('r', isMobile() ? 4 : 5)
-        .attr('cx', d => x(d.date))
-        .attr('cy', d => y(d.debt))
+        .append('g')
+        .attr('class', 'event-group cursor-pointer')
+        .attr('transform', d => `translate(${x(d.date)},${y(d.debt)})`)
+        .style('opacity', 0)
         .on('click', (_, d) => showEventModal(d));
 
-    dots.append('title').text(d => d.title);
+    eventGroups.append('circle')
+        .attr('class', 'event-ring stroke-blue-500 dark:stroke-green-500 fill-transparent pointer-events-none opacity-75')
+        .attr('r', isMobile() ? 8 : 10)
+        .attr('stroke-width', isMobile() ? 2 : 3);
+
+    eventGroups.append('circle')
+        .attr('class', 'event-dot fill-blue-500 stroke-black dark:fill-green-500 dark:stroke-green-500')
+        .attr('r', isMobile() ? 4 : 5);
+
+    eventGroups.append('title').text(d => d.title);
 
     const movingCircle = g.append('circle')
         .attr('r', isMobile() ? 6 : 8)
@@ -134,6 +142,15 @@ export async function drawLineChartAndTicker(data) {
     const animationDuration = isMobile() ? 4000 : 8000;
     const totalLength = path.node().getTotalLength();
     const tickerInterpolator = d3.interpolateNumber(filteredData[0].debt, filteredData[filteredData.length - 1].debt);
+
+    eventGroups
+        .transition()
+        .delay(d => (x(d.date) / width) * animationDuration)
+        .style('opacity', 1)
+        .on('start', function () {
+            d3.select(this).select('.event-ring').classed('animate-ping', true);
+            d3.select(this).select('.event-dot').classed('animate-pulse', true);
+        });
 
     path
         .attr('stroke-dasharray', `${totalLength} ${totalLength}`)
@@ -169,4 +186,6 @@ export async function drawLineChartAndTicker(data) {
     g.append('g')
         .attr('class', 'brush')
         .call(brush);
+
+    eventGroups.raise();
 }
