@@ -134,13 +134,13 @@ export async function drawLineChartAndTicker(data) {
             const ring = d3.select(this).select('.event-ring');
             const dot = d3.select(this).select('.event-dot');
             ring.classed('opacity-0', false).classed('animate-ping', true);
-            dot.classed('animate-pulse', true);
+            //dot.classed('animate-pulse', true);
             tooltip.style('opacity', 1).html(d.title);
             tooltip.style('left', `${event.pageX + 10}px`).style('top', `${event.pageY - 28}px`);
             setTimeout(() => {
                 ring.classed('animate-ping', false).classed('opacity-0', true);
-                dot.classed('animate-pulse', false);
-            }, 2000);
+                //dot.classed('animate-pulse', false);
+            }, 800);
         })
         .on('mousemove', function (event) {
             tooltip.style('left', `${event.pageX + 10}px`).style('top', `${event.pageY - 28}px`);
@@ -183,7 +183,7 @@ export async function drawLineChartAndTicker(data) {
             setTimeout(() => {
                 ring.classed('animate-ping', false).classed('opacity-0', true);
                 dot.classed('animate-pulse', false);
-            }, 2000);
+            }, 800);
         });
 
     path
