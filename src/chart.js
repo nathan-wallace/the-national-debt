@@ -1,6 +1,7 @@
-import * as d3 from 'd3'; // Add this import
+import * as d3 from 'd3';
 import { isMobile, getSvgHeight } from './utils.js';
-import { getTimeFrame } from './debtData.js'; // Ensure this is imported too
+import { getTimeFrame, setCustomTimeFrame } from './debtData.js';
+import { updateDebtInWords, updateAnalysis } from './uiUpdates.js';
 
 export function drawLineChartAndTicker(data) {
     const svg = d3.select('#debtChart');
@@ -104,4 +105,21 @@ export function drawLineChartAndTicker(data) {
                 return offset;
             };
         });
+
+    const brush = d3.brushX()
+        .extent([[0, 0], [width, chartHeight]])
+        .on('end', event => {
+            if (!event.selection) return;
+            const [x0, x1] = event.selection;
+            const start = x.invert(x0);
+            const end = x.invert(x1);
+            setCustomTimeFrame(start, end);
+            drawLineChartAndTicker(data);
+            updateDebtInWords(data);
+            updateAnalysis(data);
+        });
+
+    g.append('g')
+        .attr('class', 'brush')
+        .call(brush);
 }

@@ -1,14 +1,15 @@
-import * as d3 from 'd3'; // Add this import
+import * as d3 from 'd3';
 import './styles.css';
-import { fetchDebtData } from './debtData.js';
+import { fetchDebtData, setCustomTimeFrame } from './debtData.js';
 import { drawLineChartAndTicker } from './chart.js';
 import { updateDebtInWords, updateAnalysis } from './uiUpdates.js';
 import { showPreloader } from './preloader.js';
 import { initializeTheme } from './theme.js';
 import { debounce, getCookie, setCookie } from './utils.js';
+let debtData = [];
 
 async function init() {
-    const debtData = await fetchDebtData();
+    debtData = await fetchDebtData();
     initializeTheme();
 
     if (!getCookie('visited')) {
@@ -25,16 +26,22 @@ async function init() {
             d3.select('#debtTicker').text('Error loading data');
         }
     }
+
+    const resetBtn = document.getElementById('resetZoom');
+    resetBtn.addEventListener('click', () => {
+        setCustomTimeFrame(null, null);
+        drawLineChartAndTicker(debtData);
+        updateDebtInWords(debtData);
+        updateAnalysis(debtData);
+    });
 }
 
 function handleResize() {
-    fetchDebtData().then(data => {
-        if (data.length > 0) {
-            drawLineChartAndTicker(data);
-            updateDebtInWords(data);
-            updateAnalysis(data);
-        }
-    });
+    if (debtData.length > 0) {
+        drawLineChartAndTicker(debtData);
+        updateDebtInWords(debtData);
+        updateAnalysis(debtData);
+    }
 }
 
 init();
