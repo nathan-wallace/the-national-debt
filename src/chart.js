@@ -2,6 +2,10 @@ import * as d3 from 'd3';
 import { isMobile, getSvgHeight } from './utils.js';
 import { getTimeFrame, setCustomTimeFrame } from './debtData.js';
 import { updateDebtInWords, updateAnalysis } from './uiUpdates.js';
+import eventsData from './events.json';
+import { showEventModal } from './eventModal.js';
+
+const events = eventsData.map(e => ({ ...e, date: new Date(e.date) }));
 
 export function drawLineChartAndTicker(data) {
     const svg = d3.select('#debtChart');
@@ -78,6 +82,33 @@ export function drawLineChartAndTicker(data) {
         .attr('class', 'stroke-black dark:stroke-green-500')
         .attr('stroke-width', isMobile() ? 2 : 3)
         .attr('d', line);
+
+    const bisectDate = d3.bisector(d => d.date).left;
+    const eventsInRange = events.filter(e => e.date >= startDate && e.date <= endDate);
+
+    g.selectAll('.event-dot')
+        .data(eventsInRange)
+        .enter()
+        .append('circle')
+        .attr('class', 'event-dot cursor-pointer fill-blue-500 stroke-white stroke-2')
+        .attr('r', isMobile() ? 5 : 6)
+        .attr('cx', d => x(d.date))
+        .attr('cy', d => {
+            const i = bisectDate(filteredData, d.date);
+            const d0 = filteredData[i - 1];
+            const d1 = filteredData[i];
+            let debtValue;
+            if (!d0) {
+                debtValue = d1.debt;
+            } else if (!d1) {
+                debtValue = d0.debt;
+            } else {
+                const ratio = (d.date - d0.date) / (d1.date - d0.date);
+                debtValue = d0.debt + (d1.debt - d0.debt) * ratio;
+            }
+            return y(debtValue);
+        })
+        .on('click', (event, d) => showEventModal(d));
 
     const movingCircle = g.append('circle')
         .attr('r', isMobile() ? 6 : 8)

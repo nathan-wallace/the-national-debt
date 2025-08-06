@@ -6,11 +6,13 @@ import { updateDebtInWords, updateAnalysis } from './uiUpdates.js';
 import { showPreloader } from './preloader.js';
 import { initializeTheme } from './theme.js';
 import { debounce, getCookie, setCookie } from './utils.js';
+import { initializeEventModal } from './eventModal.js';
 let debtData = [];
 
 async function init() {
     debtData = await fetchDebtData();
     initializeTheme();
+    initializeEventModal();
 
     if (!getCookie('visited')) {
         showPreloader(debtData);
