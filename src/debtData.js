@@ -1,5 +1,11 @@
 import * as d3 from 'd3';
 
+let customTimeFrame = null;
+
+export function setCustomTimeFrame(startDate, endDate) {
+    customTimeFrame = startDate && endDate ? { startDate, endDate } : null;
+}
+
 export async function fetchDebtData() {
     const apiURL = 'https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny?fields=record_date,tot_pub_debt_out_amt&sort=-record_date&page[size]=10000';
     try {
@@ -25,6 +31,7 @@ export async function fetchDebtData() {
 }
 
 export function getTimeFrame(data) {
+    if (customTimeFrame) return customTimeFrame;
     const minDate = d3.min(data, d => d.date);
     const maxDate = d3.max(data, d => d.date);
     const minYear = minDate.getFullYear();
