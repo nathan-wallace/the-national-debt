@@ -154,12 +154,12 @@ export async function drawLineChartAndTicker(data) {
         });
 
     eventGroups.append('circle')
-        .attr('class', 'event-ring stroke-blue-500 dark:stroke-green-500 fill-transparent pointer-events-none opacity-0')
+        .attr('class', 'event-ring stroke-black dark:stroke-green-500 fill-transparent pointer-events-none opacity-0')
         .attr('r', isMobile() ? 8 : 10)
         .attr('stroke-width', isMobile() ? 2 : 3);
 
     eventGroups.append('circle')
-        .attr('class', 'event-dot fill-blue-500 stroke-black dark:fill-green-500 dark:stroke-green-500')
+        .attr('class', 'event-dot fill-black stroke-white dark:fill-green-500 dark:stroke-green-500')
         .attr('r', isMobile() ? 4 : 5);
 
     const movingCircle = g.append('circle')
