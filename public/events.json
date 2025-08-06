@@ -1,20 +1,38 @@
 [
   {
-    "date": "1985-12-12",
-    "title": "Gramm-Rudman-Hollings Act",
-    "description": "Deficit reduction bill setting budget caps to curb federal deficits.",
-    "url": "https://www.congress.gov/bill/99th-congress/house-bill/3721"
+    "date": "2008-10-03",
+    "title": "Emergency Economic Stabilization Act (TARP)",
+    "description": "Congress passed the $700 billion bailout amid the financial crisis.",
+    "url": "https://www.congress.gov/bill/110th-congress/house-bill/1424"
   },
   {
-    "date": "2008-10-03",
-    "title": "Emergency Economic Stabilization Act",
-    "description": "Authorizes $700B Troubled Asset Relief Program during financial crisis.",
-    "url": "https://www.congress.gov/bill/110th-congress/house-bill/1424"
+    "date": "2009-02-17",
+    "title": "American Recovery and Reinvestment Act",
+    "description": "A $787 billion stimulus to spur economic recovery during the Great Recession.",
+    "url": "https://www.congress.gov/bill/111th-congress/house-bill/1"
+  },
+  {
+    "date": "2010-03-23",
+    "title": "Affordable Care Act",
+    "description": "Health care reform expanding coverage and introducing new taxes and subsidies.",
+    "url": "https://www.congress.gov/bill/111th-congress/house-bill/3590"
+  },
+  {
+    "date": "2017-12-22",
+    "title": "Tax Cuts and Jobs Act",
+    "description": "Sweeping tax reform cutting corporate and individual tax rates.",
+    "url": "https://www.congress.gov/bill/115th-congress/house-bill/1"
   },
   {
     "date": "2020-03-27",
     "title": "CARES Act",
-    "description": "Provides $2.2T in economic relief in response to COVID-19 pandemic.",
+    "description": "Over $2 trillion in pandemic relief for individuals and businesses.",
     "url": "https://www.congress.gov/bill/116th-congress/house-bill/748"
+  },
+  {
+    "date": "2022-08-16",
+    "title": "Inflation Reduction Act",
+    "description": "Major climate and health law aiming to curb inflation and reduce deficit.",
+    "url": "https://www.congress.gov/bill/117th-congress/house-bill/5376"
   }
 ]
