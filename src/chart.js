@@ -114,6 +114,12 @@ export async function drawLineChartAndTicker(data) {
         .map(e => ({ ...e, debt: debtLookup.get(formatYM(e.date)) }))
         .filter(e => e.debt !== undefined && e.date >= startDate && e.date <= endDate);
 
+    d3.select('#eventTooltip').remove();
+    const tooltip = d3.select('body')
+        .append('div')
+        .attr('id', 'eventTooltip')
+        .attr('class', 'absolute px-2 py-1 text-xs bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded shadow pointer-events-none opacity-0');
+
     const eventGroups = g.selectAll('.event-group')
         .data(eventPoints)
         .enter()
@@ -123,26 +129,38 @@ export async function drawLineChartAndTicker(data) {
         .style('opacity', 0)
         .on('click', function (_, d) {
             showEventModal(d);
+        })
+        .on('mouseenter', function (event, d) {
             const ring = d3.select(this).select('.event-ring');
             const dot = d3.select(this).select('.event-dot');
-            ring.classed('animate-ping', true);
+            ring.classed('opacity-0', false).classed('animate-ping', true);
             dot.classed('animate-pulse', true);
+            tooltip.style('opacity', 1).html(d.title);
+            tooltip.style('left', `${event.pageX + 10}px`).style('top', `${event.pageY - 28}px`);
             setTimeout(() => {
-                ring.classed('animate-ping', false);
+                ring.classed('animate-ping', false).classed('opacity-0', true);
                 dot.classed('animate-pulse', false);
             }, 2000);
+        })
+        .on('mousemove', function (event) {
+            tooltip.style('left', `${event.pageX + 10}px`).style('top', `${event.pageY - 28}px`);
+        })
+        .on('mouseleave', function () {
+            const ring = d3.select(this).select('.event-ring');
+            const dot = d3.select(this).select('.event-dot');
+            ring.classed('animate-ping', false).classed('opacity-0', true);
+            dot.classed('animate-pulse', false);
+            tooltip.style('opacity', 0);
         });
 
     eventGroups.append('circle')
-        .attr('class', 'event-ring stroke-blue-500 dark:stroke-green-500 fill-transparent pointer-events-none opacity-75')
+        .attr('class', 'event-ring stroke-blue-500 dark:stroke-green-500 fill-transparent pointer-events-none opacity-0')
         .attr('r', isMobile() ? 8 : 10)
         .attr('stroke-width', isMobile() ? 2 : 3);
 
     eventGroups.append('circle')
         .attr('class', 'event-dot fill-blue-500 stroke-black dark:fill-green-500 dark:stroke-green-500')
         .attr('r', isMobile() ? 4 : 5);
-
-    eventGroups.append('title').text(d => d.title);
 
     const movingCircle = g.append('circle')
         .attr('r', isMobile() ? 6 : 8)
@@ -160,10 +178,10 @@ export async function drawLineChartAndTicker(data) {
         .on('start', function () {
             const ring = d3.select(this).select('.event-ring');
             const dot = d3.select(this).select('.event-dot');
-            ring.classed('animate-ping', true);
+            ring.classed('opacity-0', false).classed('animate-ping', true);
             dot.classed('animate-pulse', true);
             setTimeout(() => {
-                ring.classed('animate-ping', false);
+                ring.classed('animate-ping', false).classed('opacity-0', true);
                 dot.classed('animate-pulse', false);
             }, 2000);
         });
