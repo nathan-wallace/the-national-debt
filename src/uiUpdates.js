@@ -22,7 +22,7 @@ export function updateDebtInWords(data) {
         .trim();
 
     debtInWordsText.html(
-        `The U.S. national debt stands at ` +
+        `The U.S. national debt totals ` +
         `${formattedDebtWords}.`
     );
 }
