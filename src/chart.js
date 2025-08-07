@@ -18,17 +18,29 @@ const modal = d3.select('#eventModal');
 const modalTitle = d3.select('#eventTitle');
 const modalDesc = d3.select('#eventDescription');
 const modalSource = d3.select('#eventSource');
+const modalClose = d3.select('#modalClose');
+let lastFocusedElement = null;
 
-d3.select('#modalClose').on('click', () => modal.classed('hidden', true));
+function closeModal() {
+    modal.classed('hidden', true);
+    if (lastFocusedElement) lastFocusedElement.focus();
+}
+
+modalClose.on('click', closeModal);
 modal.on('click', event => {
-    if (event.target === modal.node()) modal.classed('hidden', true);
+    if (event.target === modal.node()) closeModal();
+});
+d3.select(window).on('keydown', event => {
+    if (event.key === 'Escape' && !modal.classed('hidden')) closeModal();
 });
 
 function showEventModal(evt) {
     modalTitle.text(evt.title);
     modalDesc.text(evt.description);
     modalSource.attr('href', evt.url);
+    lastFocusedElement = document.activeElement;
     modal.classed('hidden', false);
+    modal.node().focus();
 }
 
 export async function drawLineChartAndTicker(data) {
