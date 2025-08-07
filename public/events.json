@@ -1,5 +1,23 @@
 [
   {
+    "date": "1997-08-05",
+    "title": "Balanced Budget Act of 1997",
+    "description": "Major budget deal to reduce the deficit through spending cuts and tax adjustments.",
+    "url": "https://www.congress.gov/bill/105th-congress/house-bill/2015"
+  },
+  {
+    "date": "2001-06-07",
+    "title": "Economic Growth and Tax Relief Reconciliation Act",
+    "description": "Introduced major tax cuts under President George W. Bush.",
+    "url": "https://www.congress.gov/bill/107th-congress/house-bill/1836"
+  },
+  {
+    "date": "2003-05-28",
+    "title": "Jobs and Growth Tax Relief Reconciliation Act",
+    "description": "Accelerated Bush-era tax cuts and provided temporary economic stimulus.",
+    "url": "https://www.congress.gov/bill/108th-congress/house-bill/2"
+  },
+  {
     "date": "2008-10-03",
     "title": "Emergency Economic Stabilization Act (TARP)",
     "description": "Congress passed the $700 billion bailout amid the financial crisis.",
@@ -34,5 +52,17 @@
     "title": "Inflation Reduction Act",
     "description": "Major climate and health law aiming to curb inflation and reduce deficit.",
     "url": "https://www.congress.gov/bill/117th-congress/house-bill/5376"
+  },
+  {
+    "date": "2021-03-11",
+    "title": "American Rescue Plan Act",
+    "description": "A $1.9 trillion COVID-19 relief package to support public health, local governments, and individuals.",
+    "url": "https://www.congress.gov/bill/117th-congress/house-bill/1319"
+  },
+  {
+    "date": "2023-06-03",
+    "title": "Fiscal Responsibility Act of 2023",
+    "description": "Suspended the debt ceiling through January 2025 and limited federal spending growth.",
+    "url": "https://www.congress.gov/bill/118th-congress/house-bill/3746"
   }
 ]
