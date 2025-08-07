@@ -64,5 +64,23 @@
     "title": "Fiscal Responsibility Act of 2023",
     "description": "Suspended the debt ceiling through January 2025 and limited federal spending growth.",
     "url": "https://www.congress.gov/bill/118th-congress/house-bill/3746"
+  },
+  {
+    "date": "2024-01-31",
+    "title": "Tax Relief for American Families and Workers Act of 2024",
+    "description": "Amended the Internal Revenue Code to improve the Child Tax Credit, low‑income housing tax credit, and disaster‑relief tax provisions.",
+    "url": "https://www.congress.gov/bill/118th-congress/house-bill/7024"
+  },
+  {
+    "date": "2025-01-05",
+    "title": "Repeal of Government Pension Offset and Windfall Elimination Provisions",
+    "description": "Amended the Social Security Act to repeal the Government Pension Offset and Windfall Elimination provisions.",
+    "url": "https://legiscan.com/US/legislation/2023"
+  },
+  {
+    "date": "2025-07-04",
+    "title": "One Big Beautiful Bill Act of 2025",
+    "description": "Sweeping tax‑and‑spending law with major tax cuts, reductions in Medicaid, food assistance, and clean energy incentives.",
+    "url": "https://www.congress.gov/bill/119th-congress/house-bill/1"
   }
 ]
