@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import { isMobile, getSvgHeight } from './utils.js';
-import { getTimeFrame, setCustomTimeFrame } from './debtData.js';
+import { getTimeFrame, setCustomTimeFrame, isCustomTimeFrame } from './debtData.js';
 import { updateDebtInWords, updateAnalysis } from './uiUpdates.js';
 
 let eventsCache = null;
@@ -60,6 +60,10 @@ export async function drawLineChartAndTicker(data) {
 
     svg.style('opacity', 0).transition().duration(1000).style('opacity', 1);
 
+    const chartTitle = isCustomTimeFrame()
+        ? `U.S. National Debt ${startDate.getFullYear()}-${endDate.getFullYear()}`
+        : 'U.S. National Debt Over Time';
+
     svg.append('text')
         .attr('x', margin.left + width / 2)
         .attr('y', margin.top / 2)
@@ -67,7 +71,7 @@ export async function drawLineChartAndTicker(data) {
         .attr('font-family', 'Press Start 2P')
         .attr('font-size', isMobile() ? '1rem' : '1.2rem')
         .attr('class', 'fill-black dark:fill-green-500')
-        .text('U.S. National Debt Over Time');
+        .text(chartTitle);
 
     g.append('g')
         .attr('transform', `translate(0,${chartHeight})`)
