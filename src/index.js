@@ -33,6 +33,7 @@ async function init() {
         drawLineChartAndTicker(debtData);
         updateDebtInWords(debtData);
         updateAnalysis(debtData);
+        resetBtn.classList.add('hidden');
     });
 }
 

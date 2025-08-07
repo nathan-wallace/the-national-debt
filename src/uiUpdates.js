@@ -37,6 +37,11 @@ export function updateAnalysis(data) {
         yearlyData[yr] = d.debt;
     });
     const years = Object.keys(yearlyData).map(Number).sort((a, b) => a - b);
+    if (years.length < 2) {
+        d3.select('#analysisText').text('Select at least two years to view analysis.');
+        return;
+    }
+
     const startYear = years[0];
     const endYear = years[years.length - 1];
     const startDebt = yearlyData[startYear];
