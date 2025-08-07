@@ -48,6 +48,11 @@ export async function drawLineChartAndTicker(data) {
     const { startDate, endDate } = getTimeFrame(data);
     const filteredData = data.filter(d => d.date >= startDate && d.date <= endDate);
 
+    if (filteredData.length < 2) {
+        console.warn('Select at least two years of data.');
+        return;
+    }
+
     const x = d3.scaleTime().domain([startDate, endDate]).range([0, width]);
     const y = d3.scaleLinear()
         .domain([d3.min(filteredData, d => d.debt) * 0.95, d3.max(filteredData, d => d.debt) * 1.05])
@@ -211,7 +216,15 @@ export async function drawLineChartAndTicker(data) {
             const [x0, x1] = event.selection;
             const start = x.invert(x0);
             const end = x.invert(x1);
+            const startYear = start.getFullYear();
+            const endYear = end.getFullYear();
+            if (endYear - startYear < 1) {
+                alert('Please select at least two years.');
+                d3.select('#resetZoom').classed('hidden', true);
+                return;
+            }
             setCustomTimeFrame(start, end);
+            d3.select('#resetZoom').classed('hidden', false);
             drawLineChartAndTicker(data);
             updateDebtInWords(data);
             updateAnalysis(data);
