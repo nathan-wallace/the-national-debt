@@ -7,6 +7,7 @@ import { showPreloader } from './preloader.js';
 import { initializeTheme } from './theme.js';
 import { debounce, getCookie, setCookie } from './utils.js';
 let debtData = [];
+let lastWidth = window.innerWidth;
 
 async function init() {
     debtData = await fetchDebtData();
@@ -38,6 +39,10 @@ async function init() {
 }
 
 function handleResize() {
+    const width = window.innerWidth;
+    const scale = window.visualViewport ? window.visualViewport.scale : 1;
+    if (width === lastWidth || scale !== 1) return;
+    lastWidth = width;
     if (debtData.length > 0) {
         drawLineChartAndTicker(debtData);
         updateDebtInWords(debtData);
@@ -47,3 +52,4 @@ function handleResize() {
 
 init();
 window.addEventListener('resize', debounce(handleResize, 200));
+
