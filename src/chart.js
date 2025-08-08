@@ -54,6 +54,10 @@ export async function drawLineChartAndTicker(data) {
     const width = parseInt(svg.style('width')) - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
 
+    d3.select('#resetZoom')
+        .style('top', `${margin.top + 8}px`)
+        .style('left', `${margin.left + 8}px`);
+
     svg.selectAll('*').remove();
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
