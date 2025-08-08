@@ -4,7 +4,7 @@
 
 @layer base {
     html {
-        @apply h-screen w-screen overflow-x-hidden antialiased;
+        @apply min-h-screen w-screen overflow-x-hidden antialiased;
     }
 
     body {
@@ -35,7 +35,7 @@
     }
 
     #debtChart {
-        @apply rounded-[15px] w-full h-[clamp(250px,80vh,400px)] block;
+        @apply rounded-[15px] w-full block;
     }
 
     .debt-in-words {
@@ -172,12 +172,7 @@ a:hover {
 @media (max-width: 640px) {
     #debtTicker {
         @apply text-[clamp(1.2rem,3.5vw,2rem)];
-    }
-    
-    .chart-section #debtChart {
-        @apply h-[250px];
-    }
-    
+    }    
     .debt-in-words p,
     .analysis p {
         @apply text-[clamp(0.75rem,1.5vw,0.95rem)];
