@@ -181,7 +181,7 @@ export async function drawLineChartAndTicker(data) {
 
     eventGroups.append('circle')
         .attr('class', 'event-dot fill-black stroke-white dark:fill-green-500 dark:stroke-black')
-        .attr('r', isMobile() ? 4 : 5);
+        .attr('r', isMobile() ? 7 : 6);
 
     const movingCircle = g.append('circle')
         .attr('r', isMobile() ? 6 : 8)
@@ -200,7 +200,7 @@ export async function drawLineChartAndTicker(data) {
             const ring = d3.select(this).select('.event-ring');
             const dot = d3.select(this).select('.event-dot');
             ring.classed('opacity-0', false).classed('animate-ping', true);
-            dot.classed('animate-pulse', true);
+            dot.classed('opacity-1', true);
             setTimeout(() => {
                 ring.classed('animate-ping', false).classed('opacity-0', true);
                 dot.classed('animate-pulse', false);

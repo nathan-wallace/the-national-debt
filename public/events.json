@@ -1,5 +1,17 @@
 [
   {
+    "date": "1993-08-10",
+    "title": "Omnibus Budget Reconciliation Act of 1993",
+    "description": "Deficit reduction law raising the top income tax rate, increasing corporate taxes, and expanding the Earned Income Tax Credit.",
+    "url": "https://www.congress.gov/bill/103rd-congress/house-bill/2264"
+  },
+  {
+    "date": "1996-09-30",
+    "title": "Omnibus Consolidated Appropriations Act of 1997",
+    "description": "Funded the federal government for FY1997 and included various policy riders and emergency spending.",
+    "url": "https://www.congress.gov/bill/104th-congress/house-bill/3610"
+  },
+  {
     "date": "1997-08-05",
     "title": "Balanced Budget Act of 1997",
     "description": "Major budget deal to reduce the deficit through spending cuts and tax adjustments.",
@@ -34,6 +46,42 @@
     "title": "Affordable Care Act",
     "description": "Health care reform expanding coverage and introducing new taxes and subsidies.",
     "url": "https://www.congress.gov/bill/111th-congress/house-bill/3590"
+  },
+  {
+    "date": "2011-08-02",
+    "title": "Budget Control Act of 2011",
+    "description": "Raised the debt ceiling and introduced automatic spending cuts (sequestration) to reduce the federal deficit.",
+    "url": "https://www.congress.gov/bill/112th-congress/senate-bill/365"
+  },
+  {
+    "date": "2013-01-02",
+    "title": "American Taxpayer Relief Act of 2012",
+    "description": "Averted the 'fiscal cliff' by making Bush-era tax cuts permanent for most Americans and raising taxes on high earners.",
+    "url": "https://www.congress.gov/bill/112th-congress/house-bill/8"
+  },
+  {
+    "date": "2014-02-15",
+    "title": "Debt Ceiling Suspension Act of 2014",
+    "description": "Suspended the statutory debt ceiling until March 15, 2015, avoiding default.",
+    "url": "https://www.congress.gov/bill/113th-congress/house-bill/325"
+  },
+  {
+    "date": "2015-10-30",
+    "title": "Bipartisan Budget Act of 2015",
+    "description": "Raised spending caps and suspended the debt ceiling until March 2017.",
+    "url": "https://www.congress.gov/bill/114th-congress/house-bill/1314"
+  },
+  {
+    "date": "2017-05-05",
+    "title": "Consolidated Appropriations Act of 2017",
+    "description": "Funded the federal government through September 2017, avoiding a shutdown.",
+    "url": "https://www.congress.gov/bill/115th-congress/house-bill/244"
+  },
+  {
+    "date": "2018-02-09",
+    "title": "Bipartisan Budget Act of 2018",
+    "description": "Raised spending caps for defense and domestic programs, extended CHIP funding, and suspended the debt ceiling until March 2019.",
+    "url": "https://www.congress.gov/bill/115th-congress/house-bill/1892"
   },
   {
     "date": "2017-12-22",

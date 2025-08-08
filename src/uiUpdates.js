@@ -1,4 +1,4 @@
-import * as d3 from 'd3'; // Add this import
+import * as d3 from 'd3';
 import { numberToWords, isMobile } from './utils.js';
 import { getTimeFrame } from './debtData.js';
 
