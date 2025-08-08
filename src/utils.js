@@ -51,7 +51,7 @@ export function numberToWords(num) {
 
 export const isMobile = () => window.innerWidth <= 640;
 
-export const getSvgHeight = () => (isMobile() ? 250 : 400);
+export const getSvgHeight = () => (isMobile() ? Math.max(180, Math.min(window.innerHeight * 0.6, 300)) : 400);
 
 export function getCookie(name) {
     const value = `; ${document.cookie}`;

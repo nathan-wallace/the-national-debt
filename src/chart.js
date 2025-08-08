@@ -49,7 +49,7 @@ export async function drawLineChartAndTicker(data) {
     svg.attr('height', height);
 
     const margin = isMobile()
-        ? { top: 40, right: 20, bottom: 80, left: 50 }
+        ? (window.innerHeight < 400 ? { top: 20, right: 20, bottom: 50, left: 40 } : { top: 40, right: 20, bottom: 80, left: 50 })
         : { top: 60, right: 60, bottom: 100, left: 80 };
     const width = parseInt(svg.style('width')) - margin.left - margin.right;
     const chartHeight = height - margin.top - margin.bottom;
