@@ -7,7 +7,7 @@ export function showPreloader(debtData) {
     const preloader = d3.select('#preloader');
     const container = d3.select('.container');
     container.style('opacity', '0');
-    preloader.style('display', 'block');
+    preloader.style('display', 'block').html('');
 
     const svg = preloader.append('svg')
         .attr('width', '100%')
