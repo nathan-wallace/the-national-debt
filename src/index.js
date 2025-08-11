@@ -15,7 +15,7 @@ async function init() {
 
     if (!getCookie('visited')) {
         showPreloader(debtData);
-        setCookie('visited', 'true', 365);
+        setCookie('visited', 'true', 1);
     } else {
         d3.select('#preloader').remove();
         d3.select('.container').style('opacity', '1');
